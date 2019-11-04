@@ -1,0 +1,22 @@
+{
+  "name": "superrent",
+  "version": "1.0.0",
+  "description": "(cs304 project part 3 - implementation)",
+  "main": "index.js",
+  "scripts": {
+    "test": "(./test)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charubhargava/superRent.git"
+  },
+  "author": " (Charu Bhargava)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/charubhargava/superRent/issues"
+  },
+  "homepage": "https://github.com/charubhargava/superRent#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
