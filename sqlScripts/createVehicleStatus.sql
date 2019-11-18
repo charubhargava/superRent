@@ -1,0 +1,1 @@
+CREATE TYPE vehicle_status as enum ('rented', 'available', 'maintenance'); 
