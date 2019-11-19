@@ -1,5 +1,9 @@
 module.exports = {
     view: function(carType, location, startTime, endTime, cb) {
+        console.log(carType);
+        console.log(location);
+        console.log(startTime);
+        console.log(endTime);
         //TODO: View the number of available vehicles for a specific car type, location, and time interval. 
         //The user should be able to provide any subset of {car type, location, time interval} to view 
         //the available vehicles. If the user provides no information, your application should automatically 

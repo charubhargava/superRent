@@ -9,6 +9,7 @@ express()
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
   .get('/view/:type/:location/:start/:end', (req, res) => {
+    console.log("view req.params: " + req.params);
     var carType = req.params.type;
     var location = req.params.location;
     var startTime = req.params.start;
