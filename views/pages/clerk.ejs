@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+    </head>
+    <body>
+        <div>
+            <h3>Clerks' Actions:</h3>
+            <h4>Rent</h4>
+            <form id="rentForm">
+                Rent with prior reservation:: <br>
+                Confirmation Number: <input type="text" name="confNo"><br>
+                or: <br>
+                Cellphone Number: <input type="tel" name="confCellphone"><br>
+                
+                Rent with no reservation:
+                Vehicle Type: <select id="reserveType" type="text" name="type"></select><br>
+                Location: <select id="reserveLocation" type="text" name="location"></select><br>
+                Start Date: <input type="date" name="startDate"><br>
+                Start Time: <input type="time" name="startTime"><br>
+                End Date:  <input type="date" name="endDate"><br>
+                End Time:  <input type="time" name="endTime"><br>
+
+                Customer Information: <br>
+                Name: <input type="text" name="name"><br>
+                Cellphone Number: <input type="tel" name="cellphone"><br>
+
+                New Customer: <br>
+                Address: <input type="text" name="address"><br>
+                Driving License: <input type="text" name="dLicense"><br>
+            </form>
+            <button onClick="prepareRentVehicle()">Rent</button>
+            </form>
+        </div>
+    </body>
+</html>

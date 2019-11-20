@@ -1,9 +1,7 @@
 module.exports = {
-    view: function(carType, location, startTime, endTime, cb) {
-        console.log(carType);
-        console.log(location);
-        console.log(startTime);
-        console.log(endTime);
+    view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
+        console.log("view");
+        console.log(arguments);
         //TODO: View the number of available vehicles for a specific car type, location, and time interval. 
         //The user should be able to provide any subset of {car type, location, time interval} to view 
         //the available vehicles. If the user provides no information, your application should automatically 
@@ -16,13 +14,17 @@ module.exports = {
         cb(null, result);
     },
     newCustomer: function(cellphone, name, address, dLicense, cb) {
+        console.log("newCustomer");
+        console.log(arguments);
         //TODO: When a customer first rents a vehicle, the company records the customer name, address, 
         //and cell phone number (with the area code). A customer is usually identified by their 
         //phone number. 
         var result = {};
         cb(null, result);
     },
-    reserve: function(carType, location, startTime, endTime, cellphone, name, cb) {
+    reserve: function(carType, location, startDate, startTime, endDate, endTime, cellphone, name, cb) {
+        console.log("reserve");
+        console.log(arguments);
         //TODO:  make a reservation, a customer provides the location, the type of the vehicle, 
         //and the day and time for which she/he would like to pick up and return the vehicle. 
         //The customer can then proceed and make a reservation or cancel it.  To make a reservation, 
@@ -31,12 +33,16 @@ module.exports = {
         cb(null, result);
     },
     cancelReservationUsingConfNo: function(confNo, cb) {
+        console.log("cancelReservationUsingConfNo");
+        console.log(arguments);
         //TODO: To cancel a reservation, a customer must provide either the confirmation number 
         //or their phone number and the dates.  
         var result = {};
         cb(null, result);
     },
     cancelReservationUsingCellphone: function(cellphone, startDate, endDate, cb) {
+        console.log("cancelReservationUsingCellphone");
+        console.log(arguments);
         //TODO: To cancel a reservation, a customer must provide either the confirmation number 
         //or their phone number and the dates.  
         var result = {};

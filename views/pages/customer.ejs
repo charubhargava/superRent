@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <% include ../partials/header.ejs %>
+  </head>
+  <body>
+    <div>
+      <h1>SuperRent</h1>
+      <h3>Canada's worst car rental service</h3>
+      <br>
+      <h3>Customers' Actions:</h3>
+      <h4>View Vehicles:</h4>
+      <form id="viewForm">
+          Vehicle Type: <select id="viewType" type="text" name="type"></select><br>
+          Location: <select id="viewLocation" type="text" name="location"></select><br>
+          Start Date: <input type="date" name="startDate"><br>
+          Start Time: <input type="time" name="startTime"><br>
+          End Date:  <input type="date" name="endDate"><br>
+          End Time:  <input type="time" name="endTime"><br>
+      </form>
+      <button onClick="viewVehicles()">View</button>
+      <h4>Make Reservation</h4>
+      <form id="reserveForm">
+          Vehicle Type: <select id="reserveType" type="text" name="type"></select><br>
+          Location: <select id="reserveLocation" type="text" name="location"></select><br>
+          Start Date: <input type="date" name="startDate"><br>
+          Start Time: <input type="time" name="startTime"><br>
+          End Date:  <input type="date" name="endDate"><br>
+          End Time:  <input type="time" name="endTime"><br>
+
+          Customer Information: <br>
+          Name: <input type="text" name="name"><br>
+          Cellphone Number: <input type="tel" name="cellphone"><br>
+
+          New Customer: <br>
+          Address: <input type="text" name="address"><br>
+          Driving License: <input type="text" name="dLicense"><br>
+      </form>
+      <button onClick="reserveVehicles()">Reserve</button>
+      <h4>Cancel Reservation</h4>
+      <form id="cancelForm">
+          Confirmation Number: <input type="text" name="confNo"><br>
+          or: <br>
+          Cellphone Number: <input type="tel" name="cellphone"><br>
+          Start Date: <input type="date" name="startDate"><br>
+          End Date:  <input type="date" name="endDate"><br>
+      </form>
+      <button onClick="cancelReservation()">Cancel</button>
+    </div>
+  </body>
+</html>
