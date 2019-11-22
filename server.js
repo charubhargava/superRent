@@ -8,11 +8,11 @@ express()
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
-  .get('/view/:type/:location/:start/:end', (req, res) => {
-    var carType = req.params.type;
-    var location = req.params.location;
-    var startTime = req.params.start;
-    var endTime = req.params.end;
+  .get('/view', (req, res) => {
+    var carType = req.query.type;
+    var location = req.query.location;
+    var startTime = req.query.start;
+    var endTime = req.query.end;
     service.view(carType, location, startTime, endTime, (err, result) => {
       if (err) {
         console.error(err);
@@ -204,22 +204,4 @@ express()
       res.send(result);
     })
   })
-  .get('/db', async (req, res) => {
-    console.log("/db")
-    try {
-      const client = await pool.connect()
-      const result = await client.query('SELECT * FROM test_table');
-      const results = { 'results': (result) ? result.rows : null};
-      res.render('pages/db', results );
-      client.release();
-    } catch (err) {
-      console.error(err);
-      res.send("Error " + err);
-    }
-  })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true  
-});
