@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: false  
+    ssl: true  
   });
 
 const DEFAULT_LOCATION = "Vancouver";
@@ -23,12 +23,12 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         location = DEFAULT_LOCATION;
     }
 
-    let baseQuery = `SELECT * FROM vehicles V WHERE V.status<>'maintenance' AND V.location=${location}`;
+    let baseQuery = `SELECT * FROM vehicles WHERE status<>'maintenance' AND location=${location}`;
     if (carType) {
         baseQuery += ` AND carType=${carType}`;
     }
 
-    let notInQuery = `AND V.vid NOT IN (SELECT R.vid FROM reservation R `
+    let notInQuery = `AND vid NOT IN (SELECT vid FROM reservation `
     if (startTime) {
         baseQuery += ` AND startTime=${startTime}`;
     }
@@ -48,7 +48,7 @@ const runQuery = (query) => {
     return new Promise(function(resolve, reject) {
         pool.query(query, (error, results) => {
             if (error) {
-                reject(error);
+                reject("SQL ERROR: " + error);
             } else {
                 results.rows.query = fullQuery;
                 resolve(results.rows);
