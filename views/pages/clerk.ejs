@@ -48,28 +48,45 @@
         </div>
         <div class="action">
             <h3>Return</h3>
-            <form id="returnForm">
-                <div>Vehicle License: <input type="text" name="vLicense"></div>
-                <div class="flex-row-container">
-                    Return Date*: <input type="date" name="startDate">
-                    Return Time*: <input type="time" name="startTime">
-                </div>
-                <div class="flex-row-container">
-                    Odometer reading*: <input type="number" name="odometer">
-                    Full tank*: <input type="checkbox" name="fulltank">
-                </div>
-            </form>
-            <button onClick="returnVehicle()">Return</button>
+            <div class="flex-column-container">
+                <form id="returnForm">
+                    <div>Confirmation Number*: <input type="text" name="confNo"></div>
+                    <div class="flex-row-container">
+                        Return Date*: <input type="date" name="startDate">
+                        Return Time*: <input type="time" name="startTime">
+                    </div>
+                    <div class="flex-row-container">
+                        Odometer reading*: <input type="number" name="odometer">
+                        Full tank*: <input type="checkbox" name="fulltank">
+                    </div>
+                </form>
+                <button onClick="returnVehicle()">Return</button>
+            </div>
         </div>
         <div class="action">
             <h3>Report</h3>
-            <form id="reportForm">
-                <div class="flex-row-container">
-                    Report Type*: <select class="reportType" type="text" name="reportType"></select>
-                    Location: <select class="location" type="text" name="location"></select>
-                </div>
-            </form>
-            <button onClick="getReport()">Get Report</button>
+            <div class="flex-column-container">
+                <form id="reportForm">
+                    <div class="flex-row-container">
+                        Report Type*: <select class="reportType" type="text" name="reportType"></select>
+                        Location: <select class="location" type="text" name="location"></select>
+                    </div>
+                </form>
+                <button onClick="getReport()">Get Report</button>
+            </div>
+        </div>
+        <div id="confirmRentModal" class="modal">
+            <div class="modal-content">
+              <span id="confirmRentClose" class="close">x</span>
+              <div class="flex-column-container">
+                <form id="confirmForm">
+                    <div>Driving License*: <input type="text" name="dLicense"></div>
+                    <div>Credit Card Number*: <input type=text pattern="[0-9]{13,16}" name="cardNo"></div>
+                    <div>Expiry*: <input type="month" name="expiration"></div>
+                </form>
+                <button id="confirmRentButton">Confirm</button>
+            </div>
+            </div>
         </div>
     </div>
 </body>

@@ -132,22 +132,51 @@ function prepareRentVehicle() {
     console.log(requestUrl);
     httpPost(requestUrl,
     function(res) {
-        console.log(res);
+        confNo = res.confNo;
+        confirmRent("confNo");
     },
     function(err) {
         alert(err);
     });
 }
 
+function confirmRent(confNo) {
+    var confirmRentModal = document.getElementById("confirmRentModal");
+    var closeButton = document.getElementById("confirmRentClose");
+    var confirmButton = document.getElementById("confirmRentButton");
+    closeButton.onclick = function() {
+        confirmRentModal.style.display = "none";
+    }
+    confirmButton.onclick = function() {
+        console.log("confirmRent");
+        var element = document.getElementById("confirmForm");
+        var dLicense = element.dLicense.value;
+        var cardNo = element.cardNo.value;
+        var expiration = element.expiration.value;
+        var requestUrl = server_url + `rent/${confNo}/${dLicense}/${cardNo}/${expiration}`
+        console.log(requestUrl);
+        httpPost(requestUrl,
+        function(res) {
+
+            console.log(res);
+        },
+        function(err) {
+            alert(err);
+        });
+        confirmRentModal.style.display = "none";
+    }
+    confirmRentModal.style.display = "block";
+}
+
 function returnVehicle() {
     console.log("returnVehicles");
     var element = document.getElementById("rentForm");
-    var vLicense = element.vLicense.value;
+    var confNo = element.confNo.value;
     var returnDate = element.returnDate.value;
     var returnTime = element.returnTime.value;
     var odometer = element.odometer.value;
     var fulltank = element.fulltank.value;
-    var requestUrl = server_url + `return/${vLicense}/${returnDate}/${returnTime}/${fulltank}`;
+    var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${fulltank}`;
     console.log(requestUrl);
     httpPost(requestUrl,
     function(res) {
