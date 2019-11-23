@@ -1,7 +1,8 @@
 const db = require("./db");
 module.exports = {
-    view: function(carType, location, startTime, endTime, cb) {
-        db.viewVehiclesAvailable(carType, location, startTime, endTime)
+    view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
+        //TODO - merge datetime Thanky To
+        db.viewVehiclesAvailable(carType, location, startDate, endDate)
         .then((res) => cb(null, res))
         .catch((err) => cb(err, null));
     },
