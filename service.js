@@ -1,17 +1,10 @@
+const db = require("./db");
 module.exports = {
     view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
-        console.log("view");
-        console.log(arguments);
-        //TODO: View the number of available vehicles for a specific car type, location, and time interval. 
-        //The user should be able to provide any subset of {car type, location, time interval} to view 
-        //the available vehicles. If the user provides no information, your application should automatically 
-        //return a list of all vehicles (at that branch) sorted in some reasonable way for the user 
-        //to peruse. The actual number of available vehicles should be displayed. After seeing 
-        //the number of vehicles, there should be a way for the user to see the details of the 
-        //available vehicles if the user desires to do so (e.g., if the user clicks on the number of 
-        //available vehicles, a list with the vehicles’ details should be displayed). 
-        var result = {};
-        cb(null, result);
+        //TODO - merge datetime Thanky To
+        db.viewVehiclesAvailable(carType, location, startDate, endDate)
+        .then((res) => cb(null, res))
+        .catch((err) => cb(err, null));
     },
     newCustomer: function(cellphone, name, address, dLicense, cb) {
         console.log("newCustomer");
