@@ -17,8 +17,6 @@
                 <form id="rentForm">
                     <h4>Rent with prior reservation:</h4>
                     <div>Confirmation Number: <input type="text" name="confNo"></div>
-                    <h4>or:</h4>
-                    <div>Cellphone Number: <input type="tel" name="confCellphone"></div>
                     <br>
                     <h4>Rent with no reservation:</h4>
                     <div class="flex-row-container">
@@ -33,14 +31,13 @@
                     </div>
                     Customer Information:
                     <div class="flex-row-container">
-                        Name*: <input type="text" name="name">
-                        Cellphone Number*: <input type="tel" name="cellphone">
+                        Driving License*: <input type="text" name="dLicense">
                     </div>
 
                     New Customer:
                     <div class="flex-row-container">
+                        Name*: <input type="text" name="name">
                         Address*: <input type="text" name="address">
-                        Driving License*: <input type="text" name="dLicense">
                     </div>
                 </form>
                 <button onClick="prepareRentVehicle()">Rent</button>
@@ -69,6 +66,7 @@
                 <form id="reportForm">
                     <div class="flex-row-container">
                         Report Type*: <select class="reportType" type="text" name="reportType"></select>
+                        Date: <input type="date" name="reportDate">;
                         Location: <select class="location" type="text" name="location"></select>
                     </div>
                 </form>
@@ -77,15 +75,15 @@
         </div>
         <div id="confirmRentModal" class="modal">
             <div class="modal-content">
-              <span id="confirmRentClose" class="close">x</span>
-              <div class="flex-column-container">
-                <form id="confirmForm">
-                    <div>Driving License*: <input type="text" name="dLicense"></div>
-                    <div>Credit Card Number*: <input type=text pattern="[0-9]{13,16}" name="cardNo"></div>
-                    <div>Expiry*: <input type="month" name="expiration"></div>
-                </form>
-                <button id="confirmRentButton">Confirm</button>
-            </div>
+                <span id="confirmRentClose" class="close">x</span>
+                <div class="flex-column-container">
+                    <form id="confirmForm">
+                        <div>Driving License*: <input type="text" name="dLicense"></div>
+                        <div>Credit Card Number*: <input type=text pattern="[0-9]{13,16}" name="cardNo"></div>
+                        <div>Expiry*: <input type="month" name="expiration"></div>
+                    </form>
+                    <button id="confirmRentButton">Confirm</button>
+                </div>
             </div>
         </div>
     </div>
