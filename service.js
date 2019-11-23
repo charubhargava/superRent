@@ -1,8 +1,9 @@
 const db = require("./db");
 module.exports = {
     view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
-        //TODO - merge datetime Thanky To
-        db.viewVehiclesAvailable(carType, location, startDate, endDate)
+        var startTimestamp = getTimestamp(startDate, startTime);
+        var endTimestamp = getTimestamp(endDate, endTime);
+        db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
         .then((res) => cb(null, res))
         .catch((err) => cb(err, null));
     },
@@ -101,3 +102,15 @@ module.exports = {
         cb(null, result);
     },
 };
+
+//Get timestap from date and time
+//eg. 2016-06-22 19:10:25
+function getTimestamp(date, time) {
+    if (!date) {
+        return null;
+    }
+    if (!time) {
+        time = "00:00";
+    }
+    return date + ' ' + time + ':00';
+}

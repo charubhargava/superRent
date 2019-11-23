@@ -22,13 +22,13 @@ express()
   .get('/admin', (req, res) => {
     res.render('./pages/clerk');
   })
-  .get('/view/', (req, res) => {
-    var carType = req.query.type;
-    var location = req.query.location;
-    var startDate = req.query.startDate;
-    var startTime= req.query.startTime;
-    var endDate = req.query.endDate;
-    var endTime = req.query.endTime;
+  .get('/view', (req, res) => {
+    var carType = req.query.type || null;
+    var location = req.query.location || null;
+    var startDate = req.query.startDate || null;
+    var startTime= req.query.startTime || null;
+    var endDate = req.query.endDate || null;
+    var endTime = req.query.endTime || null;
     service.view(carType, location, startDate, startTime, endDate, endTime, (err, result) => {
       if (err) {
         console.error(err);
@@ -38,14 +38,14 @@ express()
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:cellphone/:name', (req, res) => {
-    let carType = req.params.type;
-    let location = req.params.location;
-    var startDate = req.params.startDate;
-    var startTime= req.params.startTime;
-    var endDate = req.params.endDate;
-    var endTime = req.params.endTime;
-    let cellphone = req.params.cellphone;
-    let name = req.params.name;
+    let carType = req.params.type || null;
+    let location = req.params.location || null;
+    var startDate = req.params.startDate || null;
+    var startTime= req.params.startTime || null;
+    var endDate = req.params.endDate || null;
+    var endTime = req.params.endTime || null;
+    let cellphone = req.params.cellphone || null;
+    let name = req.params.name || null;
     service.reserve(carType, location, startDate, startTime, endDate, endTime, cellphone, name, (err, result) => {
       if (err) {
         console.error(err);
@@ -55,16 +55,16 @@ express()
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:cellphone/:name/:address/:dLicense', (req, res) => {
-    let carType = req.params.type;
-    let location = req.params.location;
-    var startDate = req.params.startDate;
-    var startTime= req.params.startTime;
-    var endDate = req.params.endDate;
-    var endTime = req.params.endTime;
-    let cellphone = req.params.cellphone;
-    let name = req.params.name;
-    let address = req.params.address;
-    let dLicense = req.params.dLicense;
+    let carType = req.params.type || null;
+    let location = req.params.location || null;
+    var startDate = req.params.startDate || null;
+    var startTime= req.params.startTime || null;
+    var endDate = req.params.endDate || null;
+    var endTime = req.params.endTime || null;
+    let cellphone = req.params.cellphone || null;
+    let name = req.params.name || null;
+    let address = req.params.address || null;
+    let dLicense = req.params.dLicense || null;
     service.newCustomer(cellphone, name, address, dLicense, (err, result) => {
       if (err) {
         console.error(err);
@@ -83,7 +83,7 @@ express()
   })
   .post('/cancel/:confNo', (req, res) => {
     console.log("cancel using confNo");
-    var confNo = req.params.confNo;
+    var confNo = req.params.confNo || null;
     service.cancelReservationUsingConfNo(confNo, (err, result) => {
       if (err) {
         console.error(err);
@@ -94,9 +94,9 @@ express()
   })
   .post('/cancel/:cellphone/:startDate/:endDate', (req, res) => {
     console.log("cancel using cellphone");
-    var cellphone = req.params.cellphone;
-    var startDate = req.params.startDate;
-    var endDate = req.params.endDate;
+    var cellphone = req.params.cellphone || null;
+    var startDate = req.params.startDate || null;
+    var endDate = req.params.endDate || null;
     service.cancelReservationUsingCellphone(cellphone, startDate, endDate, (err, result) => {
       if (err) {
         console.error(err);
@@ -107,7 +107,7 @@ express()
   })
   .post('/prepareRent/confNo/:confNo', (req, res) => {
     console.log("prepareRent using confNo");
-    var confNo = req.params.confNo;
+    var confNo = req.params.confNo || null;
     service.prepareRent(confNo, (err, result) => {
       if (err) {
         console.error(err);
@@ -118,7 +118,7 @@ express()
   })
   .post('/prepareRent/cellPhone/:cellphone', (req, res) => {
     console.log("prepareRent using cellphone");
-    var cellphone = req.params.cellphone;
+    var cellphone = req.params.cellphone || null;
     service.getConfNoFromCellphone(cellphone, (err, result) => {
       if (err) {
         console.error(err);
@@ -135,14 +135,14 @@ express()
     })
   })
   .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:cellphone/:name', (req, res) => {
-    let carType = req.params.type;
-    let location = req.params.location;
-    var startDate = req.params.startDate;
-    var startTime= req.params.startTime;
-    var endDate = req.params.endDate;
-    var endTime = req.params.endTime;
-    let cellphone = req.params.cellphone;
-    let name = req.params.name;
+    let carType = req.params.type || null;
+    let location = req.params.location || null;
+    var startDate = req.params.startDate || null;
+    var startTime= req.params.startTime || null;
+    var endDate = req.params.endDate || null;
+    var endTime = req.params.endTime || null;
+    let cellphone = req.params.cellphone || null;
+    let name = req.params.name || null;
     service.reserve(carType, location, startDate, startTime, endDate, endTime, cellphone, name, (err, result) => {
       if (err) {
         console.error(err);
@@ -158,16 +158,16 @@ express()
     });
   })
   .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:cellphone/:name/:address/:dLicense', (req, res) => {
-    let carType = req.params.type;
-    let location = req.params.location;
-    var startDate = req.params.startDate;
-    var startTime= req.params.startTime;
-    var endDate = req.params.endDate;
-    var endTime = req.params.endTime;
-    let cellphone = req.params.cellphone;
-    let name = req.params.name;
-    let address = req.params.address;
-    let dLicense = req.params.dLicense;
+    let carType = req.params.type || null;
+    let location = req.params.location || null;
+    var startDate = req.params.startDate || null;
+    var startTime= req.params.startTime || null;
+    var endDate = req.params.endDate || null;
+    var endTime = req.params.endTime || null;
+    let cellphone = req.params.cellphone || null;
+    let name = req.params.name || null;
+    let address = req.params.address || null;
+    let dLicense = req.params.dLicense || null;
     service.newCustomer(cellphone, name, address, dLicense, (err, result) => {
       if (err) {
         console.error(err);
@@ -193,10 +193,10 @@ express()
   })
   .post('/rent/:confNo/:dLicense/:cardNo/:expiration', (req, res) => {
     console.log("rent");
-    var confNo = req.params.confNo;
-    var dLicense = req.params.dLicense;
-    var cardNo = req.params.cardNo;
-    var expiration = req.params.expiration;
+    var confNo = req.params.confNo || null;
+    var dLicense = req.params.dLicense || null;
+    var cardNo = req.params.cardNo || null;
+    var expiration = req.params.expiratio || null;
     service.rent(confNo, dLicense, cardNo, expiration, (err, result) => {
       if (err) {
         console.error(err);
@@ -206,6 +206,11 @@ express()
     })
   })
   .post('/return/:confNo/:date/:time/:odometer/:fullTank', (req, res) => {
+    var confNo = req.params.confNo || null;
+    var date = req.params.date || null;
+    var time = req.params.time || null;
+    var odometer = req.params.odometer || null;
+    var fullTank = req.params.fullTank || null
     service.return(confNo, date, time, odometer, fullTank, (err, result) => {
       if (err) {
         console.error(err);
@@ -224,7 +229,7 @@ express()
     })
   })
   .get('/getReport/dailyRentalsForBranch/:location', (req, res) => {
-    var location = req.params.location;
+    var location = req.params.location || null;
     service.getDailyRentalsReportForBranch(location, (err, result) => {
       if (err) {
         console.error(err);
@@ -243,7 +248,7 @@ express()
     })
   })
   .get('/getReport/dailyReturnsForBranch/:location', (req, res) => {
-    var location = req.params.location;
+    var location = req.params.location || null;
     service.getDailyReturnsReport(location, (err, result) => {
       if (err) {
         console.error(err);
