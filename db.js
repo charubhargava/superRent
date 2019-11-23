@@ -1,16 +1,17 @@
 const Pool = require('pg').Pool
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL,
-//     ssl: true  
-//   });
-
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'superrentmock',
-    password: 'vicno84',
-    port: 5432,
-});
+    connectionString: process.env.DATABASE_URL,
+    ssl: true  
+  });
+
+// const pool = new Pool({
+//     user: 'postgres',
+//     host: 'localhost',
+//     database: 'superrentmock',
+//     password: 'pwd',
+//     port: 5432,
+// });
+
 const DEFAULT_LOCATION = "Vancouver";
 
 //////////////////////////////////////////////////////////////////////////////////////////////
