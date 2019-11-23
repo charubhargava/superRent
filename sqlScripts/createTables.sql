@@ -27,14 +27,14 @@ CREATE TABLE Vehicles (vid INT PRIMARY KEY,
     city TEXT
   );
 
-CREATE TABLE Reservation (confNo INT PRIMARY KEY, 
+CREATE TABLE Reservation (confNo SERIAL PRIMARY KEY, 
                         vtName TEXT REFERENCES VehicleType(vtName), 
                         dlicense TEXT REFERENCES Customer(dlicense), 
                         fromDate Timestamp, 
                         toDate Timestamp
                     );
 
-CREATE TABLE Rent (rid INT PRIMARY KEY,
+CREATE TABLE Rent (rid SERIAL PRIMARY KEY,
                 vid INT REFERENCES Vehicles(vid),
                 dlicense TEXT REFERENCES Customer(dlicense),
                 fromDate Timestamp, 
@@ -43,11 +43,11 @@ CREATE TABLE Rent (rid INT PRIMARY KEY,
                 cardName TEXT, 
                 cardNo TEXT, 
                 expDate Date, 
-                confNo INT REFERENCES Reservation(confNo)
+                confNo SERIAL REFERENCES Reservation(confNo)
             );
 
 
-CREATE TABLE Return (rid INT PRIMARY KEY REFERENCES Rent(rid),
+CREATE TABLE Return (rid SERIAL PRIMARY KEY REFERENCES Rent(rid),
                 date Timestamp,
                 odometer INT,
                 fulltank boolean,
