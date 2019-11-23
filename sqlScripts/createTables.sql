@@ -1,8 +1,3 @@
-CREATE TABLE TimePeriod (fromDate Timestamp,
-                toDate Timestamp, 
-                PRIMARY KEY (fromDate, toDate)
-);
-
 CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY, 
                         features TEXT,
                         wrate float, 
@@ -15,8 +10,8 @@ CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY,
                         );
 
 CREATE TABLE Customer (dlicense TEXT PRIMARY KEY,
-                    points INT, 
-                    fees float
+                    name TEXT, 
+                    address TEXT
                     );
 
 CREATE TABLE Vehicles (vid INT PRIMARY KEY,
@@ -36,8 +31,7 @@ CREATE TABLE Reservation (confNo INT PRIMARY KEY,
                         vtName TEXT REFERENCES VehicleType(vtName), 
                         dlicense TEXT REFERENCES Customer(dlicense), 
                         fromDate Timestamp, 
-                        toDate Timestamp, 
-                        FOREIGN KEY (fromDate, toDate) REFERENCES TimePeriod (fromDate, toDate)
+                        toDate Timestamp
                     );
 
 CREATE TABLE Rent (rid INT PRIMARY KEY,
@@ -49,8 +43,7 @@ CREATE TABLE Rent (rid INT PRIMARY KEY,
                 cardName TEXT, 
                 cardNo TEXT, 
                 expDate Date, 
-                confNo INT REFERENCES Reservation(confNo),
-                FOREIGN KEY (fromDate, toDate) REFERENCES TimePeriod (fromDate, toDate)
+                confNo INT REFERENCES Reservation(confNo)
             );
 
 
