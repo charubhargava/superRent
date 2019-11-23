@@ -1,10 +1,9 @@
 const DAILY_RENTALS = "Daily Rentals";
 const DAILY_RETURNS = "Daily Returns"
-const ANY = "Any";
 const ALL = "All";
 
 var server_url = 'http://localhost:5000/'
-var available_vehicle_types = [ANY, "Economy", "Compact", "Mid-size", "Standard", "Fullsize", "SUV", "Truck"];
+var available_vehicle_types = [ALL, "Economy", "Compact", "Mid-size", "Standard", "Fullsize", "SUV", "Truck"];
 var available_locations = [ALL, "Burnaby", "Richmond", "Surrey", "UBC", "Vancouver"];
 var available_report_types = [DAILY_RENTALS, DAILY_RETURNS];
 
@@ -34,7 +33,7 @@ function populateDropdown(className, options) {
 function viewVehicles() {
     console.log("viewVehicles");
     var element = document.getElementById("viewForm");
-    var type = element.type.value === ANY ? undefined : element.type.value;
+    var type = element.type.value === ALL ? undefined : element.type.value;
     var location = element.location.value === ALL ? undefined : element.location.value;
     var startDate = element.startDate.value;
     var startTime = element.startTime.value;
