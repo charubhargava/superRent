@@ -161,16 +161,17 @@ function getReport() {
     console.log("getReport");
     var element = document.getElementById("reportForm");
     var reportType = element.reportType.value;
+    var reportDate = element.reportDate.value;
     var location = element.location.value;
     var requestUrl = "";
     if (reportType === DAILY_RENTALS && location === ALL) {
-        requestUrl = server_url + `getReport/dailyRentals`
+        requestUrl = server_url + `getReport/dailyRentals/${reportDate}`
     } else if (reportType === DAILY_RENTALS && location !== ALL) {
-        requestUrl = server_url + `getReport/dailyRentalsForBranch/${location}`
+        requestUrl = server_url + `getReport/dailyRentalsForBranch/${reportDate}/${location}`
     } else if (reportType === DAILY_RETURNS && location === ALL) {
-        requestUrl = server_url + `getReport/dailyReturns`
+        requestUrl = server_url + `getReport/dailyReturns/${reportDate}`
     } else if (reportType === DAILY_RETURNS && location !== ALL) {
-        requestUrl = server_url + `getReport/dailyReturnsForBranch/${location}`
+        requestUrl = server_url + `getReport/dailyReturnsForBranch/${reportDate}/${location}`
     }
     console.log(requestUrl);
     httpGet(requestUrl,

@@ -34,7 +34,7 @@ module.exports = {
         var result = {};
         cb(null, result);
     },
-    getDailyRentalsReport: function(cb) {
+    getDailyRentalsReport: function(reportDate, cb) {
         //TODO:  This report contains information on all the vehicles rented out during the day. 
         //The entries are grouped by branch, and within each branch, the entries are grouped by 
         //vehicle category. The report also displays the number of vehicles rented per category 
@@ -43,12 +43,12 @@ module.exports = {
         var result = {};
         cb(null, result);
     },
-    getDailyRentalsReportForBranch: function(location, cb) {
+    getDailyRentalsReportForBranch: function(reportDate, location, cb) {
         //TODO: This is the same as the Daily Rental report but it is for one specified branch
         var result = {};
         cb(null, result);
     },
-    getDailyReturnsReport: function(cb) {
+    getDailyReturnsReport: function(reportDate, cb) {
         //TODO: The report contains information on all the vehicles returned during the day. 
         //The entries are grouped by branch, and within each branch, the entries are grouped 
         //by vehicle category. The report also shows the number of vehicles returned per category, 
@@ -57,7 +57,7 @@ module.exports = {
         var result = {};
         cb(null, result);
     },
-    getDailyReturnsReportForBranch: function(location, cb) {
+    getDailyReturnsReportForBranch: function(reportDate, location, cb) {
         //TODO: This is the same as the Daily Returns report, but it is for one specified branch. 
         var result = {};
         cb(null, result);

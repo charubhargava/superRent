@@ -111,18 +111,17 @@ express()
       })
     });
   })
-  .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:cellphone/:name/:address/:dlicense', (req, res) => {
+  .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
     var carType = req.params.type || null;
     var location = req.params.location || null;
     var startDate = req.params.startDate || null;
     var startTime= req.params.startTime || null;
     var endDate = req.params.endDate || null;
     var endTime = req.params.endTime || null;
-    var cellphone = req.params.cellphone || null;
     var name = req.params.name || null;
     var address = req.params.address || null;
     var dlicense = req.params.dlicense || null;
-    service.newCustomer(name, address, dlicense, (err, result) => {
+    service.newCustomer(dlicense, name, address, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);
@@ -172,8 +171,9 @@ express()
       res.send(result);
     })
   })
-  .get('/getReport/dailyRentals', (req, res) => {
-    service.getDailyRentalsReport((err, result) => {
+  .get('/getReport/dailyRentals/:reportDate', (req, res) => {
+    var reportDate = req.params.reportDate || null;
+    service.getDailyRentalsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);
@@ -181,9 +181,10 @@ express()
       res.send(result);
     })
   })
-  .get('/getReport/dailyRentalsForBranch/:location', (req, res) => {
+  .get('/getReport/dailyRentalsForBranch/:reportDate/:location', (req, res) => {
+    var reportDate = req.params.reportDate || null;
     var location = req.params.location || null;
-    service.getDailyRentalsReportForBranch(location, (err, result) => {
+    service.getDailyRentalsReportForBranch(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);
@@ -191,8 +192,9 @@ express()
       res.send(result);
     })
   })
-  .get('/getReport/dailyReturns', (req, res) => {
-    service.getDailyReturnsReport((err, result) => {
+  .get('/getReport/dailyReturns/:reportDate', (req, res) => {
+    var reportDate = req.params.reportDate || null;
+    service.getDailyReturnsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);
@@ -200,9 +202,10 @@ express()
       res.send(result);
     })
   })
-  .get('/getReport/dailyReturnsForBranch/:location', (req, res) => {
+  .get('/getReport/dailyReturnsForBranch/:reportDate/:location', (req, res) => {
+    var reportDate = req.params.reportDate || null;
     var location = req.params.location || null;
-    service.getDailyReturnsReport(location, (err, result) => {
+    service.getDailyReturnsReport(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);
