@@ -17,9 +17,8 @@ CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY,
                         );
 
 CREATE TABLE Customer (dlicense TEXT PRIMARY KEY,
-                    points INT, 
-                    fees float
-                    );
+                        name TEXT,
+                        address TEXT);
 
 CREATE TABLE Vehicles (vid INT PRIMARY KEY,
     vlicense TEXT, 

@@ -59,39 +59,14 @@ function reserveVehicles() {
     var startTime = element.startTime.value;
     var endDate = element.endDate.value;
     var endTime = element.endTime.value;
-    var cellphone = element.cellphone.value;
     var name = element.name.value;
     var address = element.address.value;
     var dLicense = element.dLicense.value;
     var requestUrl = "";
     if (!address || !dLicense) {
-        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${cellphone}/${name}`;
+        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}`;
     } else {
-        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${cellphone}/${name}/${address}/${dLicense}`;
-    }
-    console.log(requestUrl);
-    httpPost(requestUrl,
-    function(res) {
-        console.log(res);
-    },
-    function(err) {
-        alert(err);
-    });
-}
-
-function cancelReservation() {
-    console.log("cancelReservation");
-    var element = document.getElementById("cancelForm");
-    var confNo = element.confNo.value;
-    var cellphone = element.cellphone.value;
-    var startDate = element.startDate.value;
-    var endDate = element.endDate.value;
-    var cellphone = element.cellphone.value;
-    var requestUrl = "";
-    if (confNo) {
-        requestUrl = server_url + `cancel/${confNo}`;
-    } else {
-        requestUrl = server_url + `cancel/${cellphone}/${startDate}/${endDate}`;
+        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
     console.log(requestUrl);
     httpPost(requestUrl,
@@ -104,29 +79,25 @@ function cancelReservation() {
 }
 
 function prepareRentVehicle() {
-    console.log("reserveVehicles");
+    console.log("prepareRentVehicle");
     var element = document.getElementById("rentForm");
     var confNo = element.confNo.value;
-    var confCellphone = element.confCellphone.value;
     var type = element.type.value;
     var location = element.location.value;
     var startDate = element.startDate.value;
     var startTime = element.startTime.value;
     var endDate = element.endDate.value;
     var endTime = element.endTime.value;
-    var cellphone = element.cellphone.value;
     var name = element.name.value;
     var address = element.address.value;
     var dLicense = element.dLicense.value;
     var requestUrl = "";
     if (confNo) {
-        requestUrl = server_url + `prepareRent/confNo/${confNo}`
-    } else if (confCellphone) {
-        requestUrl = server_url + `prepareRent/cellPhone/${confCellphone}`
+        requestUrl = server_url + `prepareRent/${confNo}`
     } else if (!address || !dLicense) {
-        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${cellphone}/${name}`;
+        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}`;
     } else {
-        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${cellphone}/${name}/${address}/${dLicense}`;
+        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
     console.log(requestUrl);
     httpPost(requestUrl,

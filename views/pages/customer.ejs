@@ -45,32 +45,16 @@
                     </div>
                     Customer Information:
                     <div class="flex-row-container">
-                        Name*: <input type="text" name="name">
-                        Cellphone Number*: <input type="tel" name="cellphone">
+                        Driving License*: <input type="text" name="dLicense">
                     </div>
 
                     New Customer:
                     <div class="flex-row-container">
+                        Name*: <input type="text" name="name">
                         Address*: <input type="text" name="address">
-                        Driving License*: <input type="text" name="dLicense">
                     </div>
                 </form>
                 <button onClick="reserveVehicles()">Reserve</button>
-            </div>
-        </div>
-        <div class="action">
-            <h3>Cancel Reservation</h3>
-            <div class="flex-column-container">
-                <form id="cancelForm">
-                    <div>Confirmation Number*: <input type="text" name="confNo"></div>
-                    <h3>or: </h3>
-                    <div>Cellphone Number*: <input type="tel" name="cellphone"></div>
-                    <div class="flex-row-container">
-                        Start Date*: <input type="date" name="startDate">
-                        End Date*: <input type="date" name="endDate">
-                    </div>
-                </form>
-                <button onClick="cancelReservation()">Cancel</button>
             </div>
         </div>
         * indicates required fields
