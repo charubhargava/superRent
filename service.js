@@ -6,13 +6,17 @@ module.exports = {
         .catch((err) => cb(err, null));
     },
     newCustomer: function(cellphone, name, address, dLicense, cb) {
+        console.log("newCustomer");
+        console.log(arguments);
         //TODO: When a customer first rents a vehicle, the company records the customer name, address, 
         //and cell phone number (with the area code). A customer is usually identified by their 
         //phone number. 
         var result = {};
         cb(null, result);
     },
-    reserve: function(carType, location, startTime, endTime, cellphone, name, cb) {
+    reserve: function(carType, location, startDate, startTime, endDate, endTime, cellphone, name, cb) {
+        console.log("reserve");
+        console.log(arguments);
         //TODO:  make a reservation, a customer provides the location, the type of the vehicle, 
         //and the day and time for which she/he would like to pick up and return the vehicle. 
         //The customer can then proceed and make a reservation or cancel it.  To make a reservation, 
@@ -21,12 +25,16 @@ module.exports = {
         cb(null, result);
     },
     cancelReservationUsingConfNo: function(confNo, cb) {
+        console.log("cancelReservationUsingConfNo");
+        console.log(arguments);
         //TODO: To cancel a reservation, a customer must provide either the confirmation number 
         //or their phone number and the dates.  
         var result = {};
         cb(null, result);
     },
     cancelReservationUsingCellphone: function(cellphone, startDate, endDate, cb) {
+        console.log("cancelReservationUsingCellphone");
+        console.log(arguments);
         //TODO: To cancel a reservation, a customer must provide either the confirmation number 
         //or their phone number and the dates.  
         var result = {};
@@ -52,7 +60,7 @@ module.exports = {
         var result = {};
         cb(null, result);
     },
-    return: function(rentId, date, time, odometer, fullTank, value, cb) {
+    return: function(confNo, date, time, odometer, fullTank, cb) {
         //TODO: Only a rented vehicle can be returned. Trying to return a vehicle that has not been 
         //rented should generate some type of error message for the clerk
         //When a customer returns a vehicle, the clerk enters the date, the time, the odometer reading, 

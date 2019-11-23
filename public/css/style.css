@@ -1,0 +1,48 @@
+.content {
+    margin: auto;
+    width: 1000px;
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+
+.flex-row-container > * {
+    text-align: center;
+}
+
+.action {
+    margin: 80px 100px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  .modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    width: 80%;
+  }
+  
+  .close {
+    float: right;
+    font-size: 20px;
+  }
