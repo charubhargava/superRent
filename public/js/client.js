@@ -34,7 +34,7 @@ function viewVehicles() {
     var startTime = elements.startTime.value;
     var endDate = elements.endDate.value;
     var endTime = elements.endTime.value;
-    var requestUrl = server_url + `view/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}`;
+    var requestUrl = server_url + `view?type=${type}&location=${location}&starDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
     console.log(requestUrl);
     httpGet(requestUrl,
     function(res) {

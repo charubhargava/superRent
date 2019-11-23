@@ -22,13 +22,13 @@ express()
   .get('/admin', (req, res) => {
     res.render('./pages/clerk');
   })
-  .get('/view/:type/:location/:startDate/:startTime/:endDate/:endTime', (req, res) => {
-    var carType = req.params.type;
-    var location = req.params.location;
-    var startDate = req.params.startDate;
-    var startTime= req.params.startTime;
-    var endDate = req.params.endDate;
-    var endTime = req.params.endTime;
+  .get('/view/', (req, res) => {
+    var carType = req.query.type;
+    var location = req.query.location;
+    var startDate = req.query.startDate;
+    var startTime= req.query.startTime;
+    var endDate = req.query.endDate;
+    var endTime = req.query.endTime;
     service.view(carType, location, startDate, startTime, endDate, endTime, (err, result) => {
       if (err) {
         console.error(err);
