@@ -1,0 +1,24 @@
+.content {
+    margin: auto;
+    width: 1000px;
+}
+
+.flex-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+
+.flex-row-container > * {
+    text-align: center;
+}
+
+.action {
+    margin: 80px 100px;
+}

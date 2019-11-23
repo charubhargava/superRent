@@ -205,8 +205,8 @@ express()
       res.send(result);
     })
   })
-  .post('/return/:rentId/:date/:time/:odometer/:fullTank/:value', (req, res) => {
-    service.return(rentId, date, time, odometer, fullTank, value, (err, result) => {
+  .post('/return/:vLicense/:date/:time/:odometer/:fullTank', (req, res) => {
+    service.return(vLicense, date, time, odometer, fullTank, (err, result) => {
       if (err) {
         console.error(err);
         res.send("Error " + err);

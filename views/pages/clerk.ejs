@@ -1,36 +1,77 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <% include ../partials/header.ejs %>
-    </head>
-    <body>
-        <div>
-            <h3>Clerks' Actions:</h3>
-            <h4>Rent</h4>
-            <form id="rentForm">
-                Rent with prior reservation:: <br>
-                Confirmation Number: <input type="text" name="confNo"><br>
-                or: <br>
-                Cellphone Number: <input type="tel" name="confCellphone"><br>
-                
-                Rent with no reservation:
-                Vehicle Type: <select id="reserveType" type="text" name="type"></select><br>
-                Location: <select id="reserveLocation" type="text" name="location"></select><br>
-                Start Date: <input type="date" name="startDate"><br>
-                Start Time: <input type="time" name="startTime"><br>
-                End Date:  <input type="date" name="endDate"><br>
-                End Time:  <input type="time" name="endTime"><br>
 
-                Customer Information: <br>
-                Name: <input type="text" name="name"><br>
-                Cellphone Number: <input type="tel" name="cellphone"><br>
+<head>
+    <% include ../partials/header.ejs %>
+</head>
 
-                New Customer: <br>
-                Address: <input type="text" name="address"><br>
-                Driving License: <input type="text" name="dLicense"><br>
-            </form>
-            <button onClick="prepareRentVehicle()">Rent</button>
-            </form>
+<body>
+    <div class="content">
+        <h1>SuperRent</h1>
+        <h2>Canada's worst car rental service</h2>
+        <br>
+        <h2>Clerks' Actions:</h2>
+        <div class="action">
+            <h3>Rent</h3>
+            <div class="flex-column-container">
+                <form id="rentForm">
+                    <h4>Rent with prior reservation:</h4>
+                    <div>Confirmation Number: <input type="text" name="confNo"></div>
+                    <h4>or:</h4>
+                    <div>Cellphone Number: <input type="tel" name="confCellphone"></div>
+                    <br>
+                    <h4>Rent with no reservation:</h4>
+                    <div class="flex-row-container">
+                        Vehicle Type*: <select class="type" type="text" name="type"></select>
+                        Location*: <select class="location" type="text" name="location"></select>
+                    </div>
+                    <div class="flex-row-container">
+                        Start Date*: <input type="date" name="startDate">
+                        Start Time*: <input type="time" name="startTime">
+                        End Date*: <input type="date" name="endDate">
+                        End Time*: <input type="time" name="endTime">
+                    </div>
+                    Customer Information:
+                    <div class="flex-row-container">
+                        Name*: <input type="text" name="name">
+                        Cellphone Number*: <input type="tel" name="cellphone">
+                    </div>
+
+                    New Customer:
+                    <div class="flex-row-container">
+                        Address*: <input type="text" name="address">
+                        Driving License*: <input type="text" name="dLicense">
+                    </div>
+                </form>
+                <button onClick="prepareRentVehicle()">Rent</button>
+            </div>
         </div>
-    </body>
+        <div class="action">
+            <h3>Return</h3>
+            <form id="returnForm">
+                <div>Vehicle License: <input type="text" name="vLicense"></div>
+                <div class="flex-row-container">
+                    Return Date*: <input type="date" name="startDate">
+                    Return Time*: <input type="time" name="startTime">
+                </div>
+                <div class="flex-row-container">
+                    Odometer reading*: <input type="number" name="odometer">
+                    Full tank*: <input type="checkbox" name="fulltank">
+                </div>
+            </form>
+            <button onClick="returnVehicle()">Return</button>
+        </div>
+        <div class="action">
+            <h3>Report</h3>
+            <form id="reportForm">
+                <div class="flex-row-container">
+                    Report Type*: <select class="reportType" type="text" name="reportType"></select>
+                    Location: <select class="location" type="text" name="location"></select>
+                </div>
+            </form>
+            <button onClick="getReport()">Get Report</button>
+        </div>
+    </div>
+</body>
+
 </html>

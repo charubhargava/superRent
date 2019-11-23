@@ -68,7 +68,7 @@ module.exports = {
         var result = {};
         cb(null, result);
     },
-    return: function(rentId, date, time, odometer, fullTank, value, cb) {
+    return: function(vLicense, date, time, odometer, fullTank, cb) {
         //TODO: Only a rented vehicle can be returned. Trying to return a vehicle that has not been 
         //rented should generate some type of error message for the clerk
         //When a customer returns a vehicle, the clerk enters the date, the time, the odometer reading, 
