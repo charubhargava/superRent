@@ -1,8 +1,6 @@
-CREATE TABLE TimePeriod (fromDate Date, 
-                fromTime Time, 
-                toDate Date, 
-                toTime Time,
-                PRIMARY KEY (fromDate, fromTime, toDate, toTime)
+CREATE TABLE TimePeriod (fromDate Timestamp,
+                toDate Timestamp, 
+                PRIMARY KEY (fromDate, toDate)
 );
 
 CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY, 
@@ -37,32 +35,27 @@ CREATE TABLE Vehicles (vid INT PRIMARY KEY,
 CREATE TABLE Reservation (confNo INT PRIMARY KEY, 
                         vtName TEXT REFERENCES VehicleType(vtName), 
                         dlicense TEXT REFERENCES Customer(dlicense), 
-                        fromDate Date, 
-                        fromTime Time, 
-                        toDate Date, 
-                        toTime Time,
-                        FOREIGN KEY (fromDate, fromTime, toDate, toTime) REFERENCES TimePeriod (fromDate, fromTime, toDate, toTime)
+                        fromDate Timestamp, 
+                        toDate Timestamp, 
+                        FOREIGN KEY (fromDate, toDate) REFERENCES TimePeriod (fromDate, toDate)
                     );
 
 CREATE TABLE Rent (rid INT PRIMARY KEY,
                 vid INT REFERENCES Vehicles(vid),
                 dlicense TEXT REFERENCES Customer(dlicense),
-                fromDate Date, 
-                fromTime Time, 
-                toDate Date, 
-                toTime Time, 
+                fromDate Timestamp, 
+                toDate Timestamp, 
                 odometer INT, 
                 cardName TEXT, 
                 cardNo TEXT, 
                 expDate Date, 
                 confNo INT REFERENCES Reservation(confNo),
-                FOREIGN KEY (fromDate, fromTime, toDate, toTime) REFERENCES TimePeriod (fromDate, fromTime, toDate, toTime)
+                FOREIGN KEY (fromDate, toDate) REFERENCES TimePeriod (fromDate, toDate)
             );
 
 
 CREATE TABLE Return (rid INT PRIMARY KEY REFERENCES Rent(rid),
-                date Date,
-                time Time,
+                date Timestamp,
                 odometer INT,
                 fulltank boolean,
                 value float
