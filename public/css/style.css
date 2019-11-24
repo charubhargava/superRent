@@ -32,17 +32,26 @@
     top: 0;
     width: 100%;
     height: 100%;
+    overflow: auto;
     background-color: rgba(0,0,0,0.4);
-  }
+}
   
-  .modal-content {
+.modal-content {
     background-color: white;
     margin: auto;
     padding: 20px;
     width: 80%;
-  }
-  
-  .close {
+}
+
+.close {
     float: right;
     font-size: 20px;
-  }
+}
+
+.modal-text{
+    white-space: pre-wrap;
+}
+
+.clickable {
+    cursor: pointer;
+}

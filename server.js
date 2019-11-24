@@ -29,11 +29,11 @@ express()
     var startTime= req.query.startTime || null;
     var endDate = req.query.endDate || null;
     var endTime = req.query.endTime || null;
-    service.view(carType, location, startDate, startTime, endDate, endTime, (err, result) => {
+    service.view(carType, location, startDate, startTime, endDate, endTime, (err, availableVehicles) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }
-      return res.send(result);
+      return res.send(availableVehicles);
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
@@ -44,11 +44,11 @@ express()
     var endDate = sanatizeParam(req.params.endDate);
     var endTime = sanatizeParam(req.params.endTime);
     var dlicense = sanatizeParam(req.params.dlicense);
-    service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
+    service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, reservation) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }
-      return res.send(result);
+      return res.send(reservation);
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
@@ -61,16 +61,15 @@ express()
     var name = sanatizeParam(req.params.name);
     var address = sanatizeParam(req.params.address);
     var dlicense = sanatizeParam(req.params.dlicense);
-    service.newCustomer(dlicense, name, address, (err, result) => {
+    service.newCustomer(dlicense, name, address, (err, newDlicense) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }
-      var dlicense = result.rows[0].dlicense;
-      service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
+      service.reserve(carType, location, startDate, startTime, endDate, endTime, newDlicense, (err, reservation) => {
         if (err) {
           return res.status(400).send("Error: " + err);
         }
-        return res.send(result);
+        return res.send(reservation);
       });
     });
   })
@@ -92,11 +91,11 @@ express()
     var endDate = sanatizeParam(req.params.endDate);
     var endTime = sanatizeParam(req.params.endTime);
     var dlicense = sanatizeParam(req.params.dlicense);
-    service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
+    service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, reservation) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }
-      var confNo = result.rows[0].confno;
+      var confNo = reservation.confNo;
       service.prepareRent(confNo, (err, result) => {
         if (err) {
           return res.status(400).send("Error: " + err);
@@ -115,17 +114,15 @@ express()
     var name = sanatizeParam(req.params.name);
     var address = sanatizeParam(req.params.address);
     var dlicense = sanatizeParam(req.params.dlicense);
-    service.newCustomer(dlicense, name, address, (err, result) => {
+    service.newCustomer(dlicense, name, address, (err, newDlicense) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }
-      var dlicense = result.rows[0].dlicense;
-      service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
+      service.reserve(carType, location, startDate, startTime, endDate, endTime, newDlicense, (err, reservation) => {
         if (err) {
           return res.status(400).send("Error: " + err);
         }
-        console.log(result);
-        var confNo = result.rows[0].confno;
+        var confNo = reservation.confNo;
         service.prepareRent(confNo, (err, result) => {
           if (err) {
             return res.status(400).send("Error: " + err);

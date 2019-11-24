@@ -5,13 +5,19 @@ module.exports = {
     view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
         var startTimestamp = getTimestamp(startDate, startTime);
         var endTimestamp = getTimestamp(endDate, endTime);
+        if (Date.parse(startTimestamp) < new Date()) {
+            return cb(ERROR.EARLY_TIME, null);
+        }
+        if (Date.parse(startTimestamp) > Date.parse(endTimestamp)) {
+            return cb(ERROR.END_AFTER_START, null);
+        }
         db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
         .then((result) => {
             let availableVehicles = result.rows;
             if (availableVehicles.length < 1) {
                 return cb(ERROR.VEHICLES_UNAVAILABLE, null);
             } else {
-                return cb(null, result);
+                return cb(null, organizeAvailableVehicles(availableVehicles));
             }
         })
         .catch((err) => cb(err, null));
@@ -19,7 +25,8 @@ module.exports = {
     newCustomer: function(dlicense, name, address, cb) {
         db.newCustomer(dlicense, name, address)
         .then((result) => {
-            return cb(null, result);
+            let newCustomerDlicense = result.rows[0].dlicense;
+            return cb(null, newCustomerDlicense);
         })
         .catch((err) => {
             if (err.includes('duplicate key')) {
@@ -32,6 +39,12 @@ module.exports = {
     reserve: function(carType, location, startDate, startTime, endDate, endTime, dlicense, cb) {
         var startTimestamp = getTimestamp(startDate, startTime);
         var endTimestamp = getTimestamp(endDate, endTime);
+        if (!location) {
+            return cb(ERROR.NO_LOCATION, null);
+        }
+        if (!carType) {
+            return cb(ERROR.NO_CARTYPE, null);
+        }
         db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
         .then((result) => {
             var availableVehicles = result.rows;
@@ -41,7 +54,11 @@ module.exports = {
                     if (result.rows.length < 1) {
                         return cb(ERROR.CUSTOMER_NOT_EXISTS, null);
                     } else {
-                        return cb(null, result);
+                        let reservation = result.rows[0];
+                        reservation.confNo = reservation.confno;
+                        delete reservation.confno;
+                        delete reservation.vid;
+                        return cb(null, reservation);
                     }
                 })
                 .catch((err) => cb(err, null));
@@ -58,7 +75,8 @@ module.exports = {
             if (availableVehicles.length < 1) {
                 return cb(ERROR.VEHICLES_UNAVAILABLE, null);
             } else {
-                return cb(null, result);
+                let selectedVehicle = availableVehicles[0];
+                return cb(null, selectedVehicle);
             }
         })
         .catch((err) => cb(err, null));
@@ -128,4 +146,27 @@ function getTimestamp(date, time) {
         time = "00:00";
     }
     return date + ' ' + time + ':00';
+}
+
+function organizeAvailableVehicles(availableVehicles) {
+    var vehicleByLocation = {};
+    for(var vehicle of availableVehicles) {
+        if (!vehicleByLocation[vehicle.location]) {
+            vehicleByLocation[vehicle.location] = [];
+        }
+        vehicleByLocation[vehicle.location].push(vehicle);
+    }
+
+    var vehicleByTypePerLocation = {};
+    for(var location in vehicleByLocation) {
+        vehicleByTypePerLocation[location] = {};
+        for(var vehicle of vehicleByLocation[location]) {
+            if (!vehicleByTypePerLocation[location][vehicle.vtname]) {
+                vehicleByTypePerLocation[vehicle.location][vehicle.vtname] = [];
+            }
+            vehicleByTypePerLocation[vehicle.location][vehicle.vtname].push(vehicle);
+        }
+    }
+
+    return vehicleByTypePerLocation;
 }

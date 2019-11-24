@@ -30,11 +30,12 @@ function populateDropdown(className, options) {
     }
 }
 
+var available_vehicles = {};
 function viewVehicles() {
     console.log("viewVehicles");
     var element = document.getElementById("viewForm");
-    var type = element.type.value === ALL ? undefined : element.type.value;
-    var location = element.location.value === ALL ? undefined : element.location.value;
+    var type = element.type.value === ALL ? "" : element.type.value;
+    var location = element.location.value === ALL ? "" : element.location.value;
     var startDate = element.startDate.value;
     var startTime = element.startTime.value;
     var endDate = element.endDate.value;
@@ -42,12 +43,38 @@ function viewVehicles() {
     var requestUrl = server_url + `view?type=${type}&location=${location}&startDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
     console.log(requestUrl);
     httpGet(requestUrl,
-    function(res) {
-        console.log(res);
+    function(availableVehicles) {
+        console.log(availableVehicles);
+        available_vehicles = availableVehicles;
+        displayModal("view",
+        function() {
+            var vehicleCount = {};
+            for(var location in availableVehicles) {
+                vehicleCount[location] = {};
+                for(var vehicleType in availableVehicles[location]) {
+                    vehicleCount[location][vehicleType] =
+                    `<a class=clickable onclick=(showVehicleDetails('${location}','${vehicleType}'))>${availableVehicles[location][vehicleType].length}</a>`;
+                }
+            }
+            var availableVehicleListContainer = document.getElementById("availableVehicleList");
+            availableVehicleListContainer.innerHTML = JSON.stringify(vehicleCount, null, 4);
+        },
+        function() {},
+        function() {});
     },
     function(err) {
         alert(err);
     });
+}
+
+function showVehicleDetails(location, vehicleType) {
+    displayModal("vehicleDetails",
+    function () {
+        var vehicleDetails = document.getElementById("vehicleDetails");
+        vehicleDetails.innerHTML =JSON.stringify(available_vehicles[location][vehicleType], null, 4);
+    },
+    function() {},
+    function() {});
 }
 
 function reserveVehicles() {
@@ -70,8 +97,14 @@ function reserveVehicles() {
     }
     console.log(requestUrl);
     httpPost(requestUrl,
-    function(res) {
-        console.log(res);
+    function(reservation) {
+        displayModal("reserve",
+        function () {
+            var reserveDetails = document.getElementById("reserveDetails");
+            reserveDetails.innerHTML =JSON.stringify(reservation, null, 4);
+        },
+        function() {},
+        function() {});
     },
     function(err) {
         alert(err);
@@ -113,13 +146,9 @@ function prepareRentVehicle() {
 
 function confirmRent(confNo) {
     console.log(confNo);
-    var confirmRentModal = document.getElementById("confirmRentModal");
-    var closeButton = document.getElementById("confirmRentClose");
-    var confirmButton = document.getElementById("confirmRentButton");
-    closeButton.onclick = function() {
-        confirmRentModal.style.display = "none";
-    }
-    confirmButton.onclick = function() {
+    displayModal("confirmRent", 
+    function() {},
+    function() {
         console.log("confirmRent");
         var element = document.getElementById("confirmForm");
         var dlicense = element.dlicense.value;
@@ -134,9 +163,8 @@ function confirmRent(confNo) {
         function(err) {
             alert(err);
         });
-        confirmRentModal.style.display = "none";
-    }
-    confirmRentModal.style.display = "block";
+    },
+    function() {});
 }
 
 function returnVehicle() {
@@ -211,4 +239,20 @@ function executeRequest(requestType, url, onSuccess, onError) {
     }
 
     xhr.send();
+}
+
+function displayModal(name, onDisplay, onButton, onClose) {
+    var modal = document.getElementById(name + "Modal");
+    var closeButton = document.getElementById(name + "Close");
+    var button = document.getElementById(name +  "Button");
+    closeButton.onclick = function() {
+        onClose();
+        modal.style.display = "none";
+    }
+    button.onclick = function() {
+        onButton();
+        modal.style.display = "none";
+    }
+    onDisplay();
+    modal.style.display = "block";
 }

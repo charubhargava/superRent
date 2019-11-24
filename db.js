@@ -27,19 +27,18 @@ const DEFAULT_LOCATION = "Vancouver";
  * @param {*} response 
  */
 const viewVehiclesAvailable = (carType, location, startTime, endTime) => { 
-    if (location == null || location == "") {
-        location = DEFAULT_LOCATION;
-    }
-
     let query = `SELECT * 
                     FROM vehicles 
-                    WHERE status<>'maintenance' AND location='${location}'`;
+                    WHERE status<>'maintenance'`;
     if (carType) {
         query += ` AND vtname='${carType}'`;
     }
+    if (location) {
+        query += ` AND location='${location}'`;
+    }
 
     if(startTime || endTime) {
-        let notInQuery = ` AND vid NOT IN (SELECT vid FROM reservation `
+        let notInQuery = ` AND vehicles.vid NOT IN (SELECT reservation.vid FROM reservation `
         if(startTime && endTime) {
             notInQuery += ` WHERE fromDate<='${startTime}' AND toDate>='${endTime}'`;
         } else if (startTime) {
@@ -48,12 +47,11 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
             baseQuery += ` WHERE toDate>='${endTime}'`;
         }
         notInQuery += ' )';
-        query += notInQuery + ';';
+        query += notInQuery;
     }
-    //TODO add order by or group by
-    console.log(query);
+    query += `
+        ORDER BY location ASC, vtname ASC;`
     return runQuery(query);
-   
 }
 
 const newCustomer = (dlicense, name, address) => {
@@ -69,7 +67,7 @@ const createReservation = (carType, vid, startDate, endDate, dlicense) => {
                 SELECT '${carType}', ${vid}, Customer.dlicense, '${startDate}', '${endDate}'
                 FROM Customer
                 WHERE Customer.dlicense='${dlicense}'
-                RETURNING Reservation.confNo;`;
+                RETURNING *;`;
     return runQuery(query);
 }
 
@@ -121,7 +119,7 @@ const runQuery = (query) => {
     return new Promise(function(resolve, reject) {
         pool.query(query, (error, results) => {
             if (error) {
-                console.log("error with query: " + query);
+                console.log("error :" + error  + "with query: " + query);
                 reject("SQL ERROR: " + error);
             } else {
                 var result = {
