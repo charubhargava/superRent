@@ -1,6 +1,8 @@
 const db = require("./db");
 module.exports = {
     view: function(carType, location, startDate, startTime, endDate, endTime, cb) {
+        console.log("view");
+        console.log(arguments);
         var startTimestamp = getTimestamp(startDate, startTime);
         var endTimestamp = getTimestamp(endDate, endTime);
         db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
@@ -19,8 +21,23 @@ module.exports = {
     reserve: function(carType, location, startDate, startTime, endDate, endTime, dlicense, cb) {
         console.log("reserve");
         console.log(arguments);
-        var result = {};
-        cb(null, result);
+        var startTimestamp = getTimestamp(startDate, startTime);
+        var endTimestamp = getTimestamp(endDate, endTime);
+        db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
+        .then((result) => {
+            var availableVehicles = result.rows;
+            if (availableVehicles.length > 0) {
+                //TODO: Andrea do your thing
+                db.createReservation()
+                .then((result) => {
+                    console.log(result);
+                    cb(null, result);
+                })
+                .catch((err) => cb(err, null));
+            }
+            cb(null, result);
+        })
+        .catch((err) => cb(err, null));
     },
     prepareRent: function(confNo, cb) {
         var result = {};
