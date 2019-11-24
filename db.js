@@ -8,7 +8,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'postgres',
-    password: 'pass!@#$',
+    password: 'abc123s',
     port: 5432,
 });
 
@@ -44,6 +44,11 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         baseQuery += ` AND endTime='${endTime}'`;
     }
 
+    // Check for overlaps
+    if(startTime && endTime) {
+        notInQuery += ` WHERE endTime >= ${startTime} AND startTime <= ${endTime}`;
+    }
+    
     notInQuery+= ` );`; //TODO add order by or group by
     let fullQuery = baseQuery + notInQuery;
 
