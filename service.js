@@ -4,7 +4,10 @@ module.exports = {
         var startTimestamp = getTimestamp(startDate, startTime);
         var endTimestamp = getTimestamp(endDate, endTime);
         db.viewVehiclesAvailable(carType, location, startTimestamp, endTimestamp)
-        .then((res) => cb(null, res))
+        .then((result) => {
+            console.log(result);
+            cb(null, result);
+        })
         .catch((err) => cb(err, null));
     },
     newCustomer: function(dlicense, name, address, cb) {

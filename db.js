@@ -59,8 +59,11 @@ const runQuery = (query) => {
             if (error) {
                 reject("SQL ERROR: " + error);
             } else {
-                results.rows.query = query;
-                resolve(results.rows);
+                var result = {
+                    rows: results.rows,
+                    query: query
+                }
+                resolve(result);
             }
         }); 
     });
