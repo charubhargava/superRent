@@ -7,7 +7,7 @@ const Pool = require('pg').Pool
 const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
-    database: 'superrentmock',
+    database: 'postgres',
     password: 'pass!@#$',
     port: 5432,
 });
@@ -31,22 +31,23 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         location = DEFAULT_LOCATION;
     }
 
-    let baseQuery = `SELECT * FROM vehicles WHERE status<>'maintenance' AND location=${location}`;
+    let baseQuery = `SELECT * FROM vehicles WHERE status<>'maintenance' AND location='${location}'`;
     if (carType) {
-        baseQuery += ` AND carType=${carType}`;
+        baseQuery += ` AND vtname='${carType}'`;
     }
 
-    let notInQuery = `AND vid NOT IN (SELECT vid FROM reservation `
+    let notInQuery = ` AND vid NOT IN (SELECT vid FROM reservation `
     if (startTime) {
-        baseQuery += ` AND startTime=${startTime}`;
+        baseQuery += ` AND startTime='${startTime}'`;
     }
     if (endTime) {
-        baseQuery += ` AND endTime=${endTime}`;
+        baseQuery += ` AND endTime='${endTime}'`;
     }
 
     notInQuery+= ` );`; //TODO add order by or group by
     let fullQuery = baseQuery + notInQuery;
 
+    console.log(fullQuery);
     return runQuery(fullQuery);
    
 }
@@ -58,7 +59,7 @@ const runQuery = (query) => {
             if (error) {
                 reject("SQL ERROR: " + error);
             } else {
-                results.rows.query = fullQuery;
+                results.rows.query = query;
                 resolve(results.rows);
             }
         }); 
