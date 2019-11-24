@@ -31,10 +31,9 @@ express()
     var endTime = req.query.endTime || null;
     service.view(carType, location, startDate, startTime, endDate, endTime, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
@@ -47,10 +46,9 @@ express()
     var dlicense = sanatizeParam(req.params.dlicense);
     service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
@@ -65,28 +63,25 @@ express()
     var dlicense = sanatizeParam(req.params.dlicense);
     service.newCustomer(dlicense, name, address, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      var dlicense = result.dlicense;
+      var dlicense = result.rows[0].dlicense;
       service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
         if (err) {
-          console.error(err);
-          res.send("Error " + err);
+          return res.status(400).send("Error: " + err);
         }
-        res.send(result);
+        return res.send(result);
       });
     });
   })
   .post('/prepareRent/:confNo', (req, res) => {
     console.log("prepareRent using confNo");
-    var confNo = req.params.confNo || null;
+    var confNo = sanatizeParam(req.params.confNo);
     service.prepareRent(confNo, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
@@ -99,15 +94,14 @@ express()
     var dlicense = sanatizeParam(req.params.dlicense);
     service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
+      var confNo = result.rows[0].confno;
       service.prepareRent(confNo, (err, result) => {
         if (err) {
-          console.error(err);
-          res.send("Error " + err);
+          return res.status(400).send("Error: " + err);
         }
-        res.send(result);
+        return res.send(result);
       })
     });
   })
@@ -123,22 +117,20 @@ express()
     var dlicense = sanatizeParam(req.params.dlicense);
     service.newCustomer(dlicense, name, address, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      var dlicense = result.dlicense;
+      var dlicense = result.rows[0].dlicense;
       service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
         if (err) {
-          console.error(err);
-          res.send("Error " + err);
+          return res.status(400).send("Error: " + err);
         }
-        var confNo = result.confNo;
+        console.log(result);
+        var confNo = result.rows[0].confno;
         service.prepareRent(confNo, (err, result) => {
           if (err) {
-            console.error(err);
-            res.send("Error " + err);
+            return res.status(400).send("Error: " + err);
           }
-          res.send(result);
+          return res.send(result);
         })
       });
     });
@@ -148,13 +140,12 @@ express()
     var confNo = sanatizeParam(req.params.confNo);
     var dlicense = sanatizeParam(req.params.dlicense);
     var cardNo = sanatizeParam(req.params.cardNo);
-    var expiration = sanatizeParam(req.params.expiratio);
+    var expiration = sanatizeParam(req.params.expiration);
     service.rent(confNo, dlicense, cardNo, expiration, (err, result) => {
       if (err) {
-        console.error(err);
-        res.send("Error " + err);
+        return res.status(400).send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .post('/return/:confNo/:date/:time/:odometer/:fullTank', (req, res) => {
@@ -163,12 +154,12 @@ express()
     var time = sanatizeParam(req.params.time);
     var odometer = sanatizeParam(req.params.odometer);
     var fullTank = sanatizeParam(req.params.fullTank);
-    service.return(confNo, date, time, odometer, fullTank, (err, result) => {
+    service.returnVehicle(confNo, date, time, odometer, fullTank, (err, result) => {
       if (err) {
         console.error(err);
-        res.send("Error " + err);
+        return res.send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .get('/getReport/dailyRentals/:reportDate', (req, res) => {
@@ -176,9 +167,9 @@ express()
     service.getDailyRentalsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
-        res.send("Error " + err);
+        return res.send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .get('/getReport/dailyRentalsForBranch/:reportDate/:location', (req, res) => {
@@ -187,9 +178,9 @@ express()
     service.getDailyRentalsReportForBranch(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
-        res.send("Error " + err);
+        return res.send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .get('/getReport/dailyReturns/:reportDate', (req, res) => {
@@ -197,9 +188,9 @@ express()
     service.getDailyReturnsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
-        res.send("Error " + err);
+        return res.send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .get('/getReport/dailyReturnsForBranch/:reportDate/:location', (req, res) => {
@@ -208,9 +199,9 @@ express()
     service.getDailyReturnsReport(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
-        res.send("Error " + err);
+        return res.send("Error: " + err);
       }
-      res.send(result);
+      return res.send(result);
     })
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))

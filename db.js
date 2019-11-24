@@ -31,47 +31,104 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         location = DEFAULT_LOCATION;
     }
 
-    let baseQuery = `SELECT * FROM vehicles WHERE status<>'maintenance' AND location='${location}'`;
+    let query = `SELECT * 
+                    FROM vehicles 
+                    WHERE status<>'maintenance' AND location='${location}'`;
     if (carType) {
-        baseQuery += ` AND vtname='${carType}'`;
+        query += ` AND vtname='${carType}'`;
     }
 
-    let notInQuery = ` AND vid NOT IN (SELECT vid FROM reservation `
-    if (startTime) {
-        baseQuery += ` AND startTime='${startTime}'`;
+    if(startTime || endTime) {
+        let notInQuery = ` AND vid NOT IN (SELECT vid FROM reservation `
+        if(startTime && endTime) {
+            notInQuery += ` WHERE fromDate<='${startTime}' AND toDate>='${endTime}'`;
+        } else if (startTime) {
+            baseQuery += ` WHERE fromDate<='${startTime}'`;
+        } else if (endTime) {
+            baseQuery += ` WHERE toDate>='${endTime}'`;
+        }
+        notInQuery += ' )';
+        query += notInQuery + ';';
     }
-    if (endTime) {
-        baseQuery += ` AND endTime='${endTime}'`;
-    }
-
-    // Check for overlaps
-    if(startTime && endTime) {
-        notInQuery += ` WHERE endTime >= ${startTime} AND startTime <= ${endTime}`;
-    }
-
-    notInQuery+= ` );`; //TODO add order by or group by
-    let fullQuery = baseQuery + notInQuery;
-
-    console.log(fullQuery);
-    return runQuery(fullQuery);
+    //TODO add order by or group by
+    console.log(query);
+    return runQuery(query);
    
 }
 
-const createReservation = (carType, location, startDate, endDate, dlicense, name, address) => {
-    let insertReservationQuery = `INSERT INTO Reservation (confNo, vtName, dlicense, fromDate, toDate) VALUES (DEFAULT, ${carType}, ${dlicense}, ${startDate}, ${endDate});`;
-    return runQuery(insertReservationQuery);
+const newCustomer = (dlicense, name, address) => {
+    let query = `
+        INSERT INTO Customer(dlicense, name, address)
+        VALUES ('${dlicense}', '${name}', '${address}')
+        RETURNING *;`
+    return runQuery(query);
+}
+
+const createReservation = (carType, vid, startDate, endDate, dlicense) => {
+    let query = `INSERT INTO Reservation (vtName, vid, dlicense, fromDate, toDate) 
+                SELECT '${carType}', ${vid}, Customer.dlicense, '${startDate}', '${endDate}'
+                FROM Customer
+                WHERE Customer.dlicense='${dlicense}'
+                RETURNING Reservation.confNo;`;
+    return runQuery(query);
+}
+
+const getVehicles = (confNo) => {
+    console.log(confNo);
+    let query = `
+        SELECT R.confNo, R.vtName, V.vid, V.vlicense, V.make, V.model, V.year, V.color, V.odometer, R.fromDate, R.toDate, R.dlicense
+        FROM Reservation R, Vehicles V
+        WHERE R.confNo='${confNo}' AND V.vid=R.vid AND V.status='available';`;
+    return runQuery(query);
+}
+
+const rent = (confNo, dlicense, cardName, cardNo, expiration) => {
+    let query = `
+        INSERT INTO Rent (vid, dlicense, fromDate, toDate, odometer, cardName, cardNo, expDate, confNo)
+        SELECT R.vid, R.dlicense, R.fromDate, R.toDate, V.odometer, '${cardName}', '${cardNo}', '${expiration}', R.confNo
+        FROM Reservation R, Vehicles V
+        WHERE R.confNo='${confNo}' AND V.vid=R.vid AND R.dlicense='${dlicense}'
+        RETURNING *;`;
+    console.log(query);
+    return runQuery(query);
+}
+
+const setVehicleStatusToRented = (vid) => {
+    let query = `
+        UPDATE Vehicles SET status='rented'
+        WHERE Vehicles.vid='${vid}'`
+    return runQuery(query);
+}
+
+const returnVehicle = (confNo, date, odometer, fullTank, value) => {
+    let query = `
+        INSERT INTO RETURN (rid, date, odometer, fulltank, value)
+        SELECT Rent.rid, '${date}', '${odometer}', '${fullTank}', '${value}'
+        FROM Rent
+        WHERE Rent.confNo='${confNo}' AND Rent.fromDate<='${date}'
+        RETURNING *;`
+    return runQuery(query);
+}
+
+const setVehicleStatusToAvailable = (vid) => {
+    let query = `
+        UPDATE Vehicles SET status='available'
+        WHERE Vehicles.vid='${vid}'`
+    return runQuery(query);
 }
 
 const runQuery = (query) => {
     return new Promise(function(resolve, reject) {
         pool.query(query, (error, results) => {
             if (error) {
+                console.log("error with query: " + query);
                 reject("SQL ERROR: " + error);
             } else {
                 var result = {
                     rows: results.rows,
                     query: query
                 }
+                console.log(result);
                 resolve(result);
             }
         }); 
@@ -79,5 +136,12 @@ const runQuery = (query) => {
 }
 
 module.exports = {
-    viewVehiclesAvailable
+    viewVehiclesAvailable,
+    createReservation,
+    newCustomer,
+    getVehicles,
+    rent,
+    setVehicleStatusToRented,
+    returnVehicle,
+    setVehicleStatusToAvailable,
 };

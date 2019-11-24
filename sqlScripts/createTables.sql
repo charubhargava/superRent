@@ -28,9 +28,10 @@ CREATE TABLE Vehicles (vid INT PRIMARY KEY,
   );
 
 CREATE TABLE Reservation (confNo SERIAL PRIMARY KEY, 
-                        vtName TEXT REFERENCES VehicleType(vtName), 
-                        dlicense TEXT REFERENCES Customer(dlicense), 
-                        fromDate Timestamp, 
+                        vtName TEXT REFERENCES VehicleType(vtName),
+                        vid INT REFERENCES Vehicles(vid),
+                        dlicense TEXT REFERENCES Customer(dlicense),
+                        fromDate Timestamp,
                         toDate Timestamp
                     );
 

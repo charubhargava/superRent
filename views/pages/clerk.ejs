@@ -19,19 +19,17 @@
                     <div>Confirmation Number: <input type="text" name="confNo"></div>
                     <br>
                     <h4>Rent with no reservation:</h4>
+                    <div class="flex-row-container">Vehicle Type*: <select class="type" type="text" name="type"></select>
+                    Location*: <select class="location" type="text" name="location"></select></div>
                     <div class="flex-row-container">
-                        Vehicle Type*: <select class="type" type="text" name="type"></select>
-                        Location*: <select class="location" type="text" name="location"></select>
-                    </div>
-                    <div class="flex-row-container">
-                        Start Date*: <input type="date" name="startDate">
-                        Start Time*: <input type="time" name="startTime">
-                        End Date*: <input type="date" name="endDate">
-                        End Time*: <input type="time" name="endTime">
+                        From Date*: <input type="date" name="startDate">
+                        From Time: <input type="time" name="startTime">
+                        To Date*: <input type="date" name="endDate">
+                        To Time: <input type="time" name="endTime">
                     </div>
                     Customer Information:
                     <div class="flex-row-container">
-                        Driving License*: <input type="text" name="dLicense">
+                        Driving License*: <input type="text" name="dlicense">
                     </div>
 
                     New Customer:
@@ -49,8 +47,8 @@
                 <form id="returnForm">
                     <div>Confirmation Number*: <input type="text" name="confNo"></div>
                     <div class="flex-row-container">
-                        Return Date*: <input type="date" name="startDate">
-                        Return Time*: <input type="time" name="startTime">
+                        Return Date*: <input type="date" name="returnDate">
+                        Return Time*: <input type="time" name="returnTime">
                     </div>
                     <div class="flex-row-container">
                         Odometer reading*: <input type="number" name="odometer">
@@ -78,8 +76,8 @@
                 <span id="confirmRentClose" class="close">x</span>
                 <div class="flex-column-container">
                     <form id="confirmForm">
-                        <div>Driving License*: <input type="text" name="dLicense"></div>
-                        <div>Credit Card Number*: <input type=text pattern="[0-9]{13,16}" name="cardNo"></div>
+                        <div>Driving License*: <input type="text" name="dlicense"></div>
+                        <div>Credit Card Number*: <input type=text pattern="[0-9]{16}" name="cardNo"></div>
                         <div>Expiry*: <input type="month" name="expiration"></div>
                     </form>
                     <button id="confirmRentButton">Confirm</button>

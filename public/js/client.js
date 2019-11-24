@@ -56,15 +56,15 @@ function reserveVehicles() {
     var type = element.type.value;
     var location = element.location.value;
     var startDate = element.startDate.value;
-    var startTime = element.startTime.value;
+    var startTime = element.startTime.value || '00:00';
     var endDate = element.endDate.value;
-    var endTime = element.endTime.value;
+    var endTime = element.endTime.value || '00:00';
     var name = element.name.value;
     var address = element.address.value;
-    var dLicense = element.dLicense.value;
+    var dlicense = element.dlicense.value;
     var requestUrl = "";
-    if (!address || !dLicense) {
-        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}`;
+    if (!address || !dlicense) {
+        requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}`;
     } else {
         requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
@@ -85,16 +85,16 @@ function prepareRentVehicle() {
     var type = element.type.value;
     var location = element.location.value;
     var startDate = element.startDate.value;
-    var startTime = element.startTime.value;
+    var startTime = element.startTime.value || '00:00';
     var endDate = element.endDate.value;
-    var endTime = element.endTime.value;
+    var endTime = element.endTime.value || '00:00';
     var name = element.name.value;
     var address = element.address.value;
-    var dLicense = element.dLicense.value;
+    var dlicense = element.dlicense.value;
     var requestUrl = "";
     if (confNo) {
         requestUrl = server_url + `prepareRent/${confNo}`
-    } else if (!address || !dLicense) {
+    } else if (!address || !dlicense) {
         requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}`;
     } else {
         requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
@@ -102,8 +102,9 @@ function prepareRentVehicle() {
     console.log(requestUrl);
     httpPost(requestUrl,
     function(res) {
-        confNo = res.confNo;
-        confirmRent("confNo");
+        console.log(res);
+        confNo = res.rows[0].confno;
+        confirmRent(confNo);
     },
     function(err) {
         alert(err);
@@ -111,6 +112,7 @@ function prepareRentVehicle() {
 }
 
 function confirmRent(confNo) {
+    console.log(confNo);
     var confirmRentModal = document.getElementById("confirmRentModal");
     var closeButton = document.getElementById("confirmRentClose");
     var confirmButton = document.getElementById("confirmRentButton");
@@ -120,14 +122,13 @@ function confirmRent(confNo) {
     confirmButton.onclick = function() {
         console.log("confirmRent");
         var element = document.getElementById("confirmForm");
-        var dLicense = element.dLicense.value;
+        var dlicense = element.dlicense.value;
         var cardNo = element.cardNo.value;
         var expiration = element.expiration.value;
-        var requestUrl = server_url + `rent/${confNo}/${dLicense}/${cardNo}/${expiration}`
+        var requestUrl = server_url + `rent/${confNo}/${dlicense}/${cardNo}/${expiration}`
         console.log(requestUrl);
         httpPost(requestUrl,
         function(res) {
-
             console.log(res);
         },
         function(err) {
@@ -140,13 +141,13 @@ function confirmRent(confNo) {
 
 function returnVehicle() {
     console.log("returnVehicles");
-    var element = document.getElementById("rentForm");
+    var element = document.getElementById("returnForm");
     var confNo = element.confNo.value;
     var returnDate = element.returnDate.value;
     var returnTime = element.returnTime.value;
     var odometer = element.odometer.value;
     var fulltank = element.fulltank.value;
-    var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${fulltank}`;
+    var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${odometer}/${fulltank}`;
     console.log(requestUrl);
     httpPost(requestUrl,
     function(res) {
