@@ -1,10 +1,3 @@
-CREATE TABLE TimePeriod (fromDate Date, 
-                fromTime Time, 
-                toDate Date, 
-                toTime Time,
-                PRIMARY KEY (fromDate, fromTime, toDate, toTime)
-);
-
 CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY, 
                         features TEXT,
                         wrate float, 
@@ -17,8 +10,9 @@ CREATE TABLE VehicleType (vtname TEXT PRIMARY KEY,
                         );
 
 CREATE TABLE Customer (dlicense TEXT PRIMARY KEY,
-                        name TEXT,
-                        address TEXT);
+                    name TEXT, 
+                    address TEXT
+                    );
 
 CREATE TABLE Vehicles (vid INT PRIMARY KEY,
     vlicense TEXT, 
@@ -33,35 +27,28 @@ CREATE TABLE Vehicles (vid INT PRIMARY KEY,
     city TEXT
   );
 
-CREATE TABLE Reservation (confNo INT PRIMARY KEY, 
+CREATE TABLE Reservation (confNo SERIAL PRIMARY KEY, 
                         vtName TEXT REFERENCES VehicleType(vtName), 
                         dlicense TEXT REFERENCES Customer(dlicense), 
-                        fromDate Date, 
-                        fromTime Time, 
-                        toDate Date, 
-                        toTime Time,
-                        FOREIGN KEY (fromDate, fromTime, toDate, toTime) REFERENCES TimePeriod (fromDate, fromTime, toDate, toTime)
+                        fromDate Timestamp, 
+                        toDate Timestamp
                     );
 
-CREATE TABLE Rent (rid INT PRIMARY KEY,
+CREATE TABLE Rent (rid SERIAL PRIMARY KEY,
                 vid INT REFERENCES Vehicles(vid),
                 dlicense TEXT REFERENCES Customer(dlicense),
-                fromDate Date, 
-                fromTime Time, 
-                toDate Date, 
-                toTime Time, 
+                fromDate Timestamp, 
+                toDate Timestamp, 
                 odometer INT, 
                 cardName TEXT, 
                 cardNo TEXT, 
                 expDate Date, 
-                confNo INT REFERENCES Reservation(confNo),
-                FOREIGN KEY (fromDate, fromTime, toDate, toTime) REFERENCES TimePeriod (fromDate, fromTime, toDate, toTime)
+                confNo SERIAL REFERENCES Reservation(confNo)
             );
 
 
-CREATE TABLE Return (rid INT PRIMARY KEY REFERENCES Rent(rid),
-                date Date,
-                time Time,
+CREATE TABLE Return (rid SERIAL PRIMARY KEY REFERENCES Rent(rid),
+                date Timestamp,
                 odometer INT,
                 fulltank boolean,
                 value float
