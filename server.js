@@ -38,13 +38,13 @@ express()
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
-    var carType = req.params.type || null;
-    var location = req.params.location || null;
-    var startDate = req.params.startDate || null;
-    var startTime= req.params.startTime || null;
-    var endDate = req.params.endDate || null;
-    var endTime = req.params.endTime || null;
-    var dlicense = req.params.dlicense || null;
+    var carType = sanatizeParam(req.params.type);
+    var location = sanatizeParam(req.params.location);
+    var startDate = sanatizeParam(req.params.startDate)
+    var startTime= sanatizeParam(req.params.startTime);
+    var endDate = sanatizeParam(req.params.endDate);
+    var endTime = sanatizeParam(req.params.endTime);
+    var dlicense = sanatizeParam(req.params.dlicense);
     service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
       if (err) {
         console.error(err);
@@ -54,15 +54,15 @@ express()
     });
   })
   .post('/reserve/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
-    var carType = req.params.type || null;
-    var location = req.params.location || null;
-    var startDate = req.params.startDate || null;
-    var startTime= req.params.startTime || null;
-    var endDate = req.params.endDate || null;
-    var endTime = req.params.endTime || null;
-    var name = req.params.name || null;
-    var address = req.params.address || null;
-    var dlicense = req.params.dlicense || null;
+    var carType = sanatizeParam(req.params.type);
+    var location = sanatizeParam(req.params.location);
+    var startDate = sanatizeParam(req.params.startDate);
+    var startTime= sanatizeParam(req.params.startTime);
+    var endDate = sanatizeParam(req.params.endDate);
+    var endTime = sanatizeParam(req.params.endTime);
+    var name = sanatizeParam(req.params.name);
+    var address = sanatizeParam(req.params.address);
+    var dlicense = sanatizeParam(req.params.dlicense);
     service.newCustomer(dlicense, name, address, (err, result) => {
       if (err) {
         console.error(err);
@@ -90,13 +90,13 @@ express()
     })
   })
   .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
-    var carType = req.params.type || null;
-    var location = req.params.location || null;
-    var startDate = req.params.startDate || null;
-    var startTime= req.params.startTime || null;
-    var endDate = req.params.endDate || null;
-    var endTime = req.params.endTime || null;
-    var dlicense = req.params.dlicense || null;
+    var carType = sanatizeParam(req.params.type);
+    var location = sanatizeParam(req.params.location);
+    var startDate = sanatizeParam(req.params.startDate);
+    var startTime= sanatizeParam(req.params.startTime);
+    var endDate = sanatizeParam(req.params.endDate);
+    var endTime = sanatizeParam(req.params.endTime);
+    var dlicense = sanatizeParam(req.params.dlicense);
     service.reserve(carType, location, startDate, startTime, endDate, endTime, dlicense, (err, result) => {
       if (err) {
         console.error(err);
@@ -112,15 +112,15 @@ express()
     });
   })
   .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
-    var carType = req.params.type || null;
-    var location = req.params.location || null;
-    var startDate = req.params.startDate || null;
-    var startTime= req.params.startTime || null;
-    var endDate = req.params.endDate || null;
-    var endTime = req.params.endTime || null;
-    var name = req.params.name || null;
-    var address = req.params.address || null;
-    var dlicense = req.params.dlicense || null;
+    var carType = sanatizeParam(req.params.type);
+    var location = sanatizeParam(req.params.location);
+    var startDate = sanatizeParam(req.params.startDate);
+    var startTime= sanatizeParam(req.params.startTime);
+    var endDate = sanatizeParam(req.params.endDate);
+    var endTime = sanatizeParam(req.params.endTime);
+    var name = sanatizeParam(req.params.name);
+    var address = sanatizeParam(req.params.address);
+    var dlicense = sanatizeParam(req.params.dlicense);
     service.newCustomer(dlicense, name, address, (err, result) => {
       if (err) {
         console.error(err);
@@ -145,10 +145,10 @@ express()
   })
   .post('/rent/:confNo/:dlicense/:cardNo/:expiration', (req, res) => {
     console.log("rent");
-    var confNo = req.params.confNo || null;
-    var dlicense = req.params.dlicense || null;
-    var cardNo = req.params.cardNo || null;
-    var expiration = req.params.expiratio || null;
+    var confNo = sanatizeParam(req.params.confNo);
+    var dlicense = sanatizeParam(req.params.dlicense);
+    var cardNo = sanatizeParam(req.params.cardNo);
+    var expiration = sanatizeParam(req.params.expiratio);
     service.rent(confNo, dlicense, cardNo, expiration, (err, result) => {
       if (err) {
         console.error(err);
@@ -158,11 +158,11 @@ express()
     })
   })
   .post('/return/:confNo/:date/:time/:odometer/:fullTank', (req, res) => {
-    var confNo = req.params.confNo || null;
-    var date = req.params.date || null;
-    var time = req.params.time || null;
-    var odometer = req.params.odometer || null;
-    var fullTank = req.params.fullTank || null
+    var confNo = sanatizeParam(req.params.confNo);
+    var date = sanatizeParam(req.params.date);
+    var time = sanatizeParam(req.params.time);
+    var odometer = sanatizeParam(req.params.odometer);
+    var fullTank = sanatizeParam(req.params.fullTank);
     service.return(confNo, date, time, odometer, fullTank, (err, result) => {
       if (err) {
         console.error(err);
@@ -172,7 +172,7 @@ express()
     })
   })
   .get('/getReport/dailyRentals/:reportDate', (req, res) => {
-    var reportDate = req.params.reportDate || null;
+    var reportDate = sanatizeParam(req.params.reportDate);
     service.getDailyRentalsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
@@ -182,8 +182,8 @@ express()
     })
   })
   .get('/getReport/dailyRentalsForBranch/:reportDate/:location', (req, res) => {
-    var reportDate = req.params.reportDate || null;
-    var location = req.params.location || null;
+    var reportDate = sanatizeParam(req.params.reportDate);
+    var location = sanatizeParam(req.params.location);
     service.getDailyRentalsReportForBranch(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
@@ -193,7 +193,7 @@ express()
     })
   })
   .get('/getReport/dailyReturns/:reportDate', (req, res) => {
-    var reportDate = req.params.reportDate || null;
+    var reportDate = sanatizeParam(req.params.reportDate);
     service.getDailyReturnsReport(reportDate, (err, result) => {
       if (err) {
         console.error(err);
@@ -203,8 +203,8 @@ express()
     })
   })
   .get('/getReport/dailyReturnsForBranch/:reportDate/:location', (req, res) => {
-    var reportDate = req.params.reportDate || null;
-    var location = req.params.location || null;
+    var reportDate = sanatizeParam(req.params.reportDate);
+    var location = sanatizeParam(req.params.location);
     service.getDailyReturnsReport(reportDate, location, (err, result) => {
       if (err) {
         console.error(err);
@@ -214,3 +214,15 @@ express()
     })
   })
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
+
+function sanatizeParam(param) {
+  if (param == undefined ||
+    param == null ||
+    param == '' ||
+    param == 'undefined' ||
+    param == 'null') {
+      return "";
+  } else {
+    return param
+  }
+}

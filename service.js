@@ -71,7 +71,7 @@ module.exports = {
 //eg. 2016-06-22 19:10:25
 function getTimestamp(date, time) {
     if (!date) {
-        return null;
+        return "";
     }
     if (!time) {
         time = "00:00";
