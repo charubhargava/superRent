@@ -16,9 +16,8 @@ module.exports = {
             let availableVehicles = result.rows;
             if (availableVehicles.length < 1) {
                 return cb(ERROR.VEHICLES_UNAVAILABLE, null);
-            } else {
-                return cb(null, organizeAvailableVehicles(availableVehicles));
             }
+            return cb(null, organizeVehiclesByBranchAndTypes(availableVehicles));
         })
         .catch((err) => cb(err, null));
     },
@@ -49,7 +48,7 @@ module.exports = {
         .then((result) => {
             var availableVehicles = result.rows;
             if (availableVehicles.length > 0) {
-                db.createReservation(carType, availableVehicles[0].vid, startDate, endDate, dlicense)
+                db.createReservation(carType, availableVehicles[0].vid, startTimestamp, endTimestamp, dlicense)
                 .then((result) => {
                     if (result.rows.length < 1) {
                         return cb(ERROR.CUSTOMER_NOT_EXISTS, null);
@@ -76,6 +75,9 @@ module.exports = {
                 return cb(ERROR.VEHICLES_UNAVAILABLE, null);
             } else {
                 let selectedVehicle = availableVehicles[0];
+                selectedVehicle.confNo = selectedVehicle.confno;
+                delete selectedVehicle.confno;
+                delete selectedVehicle.vid;
                 return cb(null, selectedVehicle);
             }
         })
@@ -87,12 +89,13 @@ module.exports = {
         //and expiry date.
         db.rent(confNo, dlicense, '', cardNo, expiration + '-01')
         .then((result) => {
-            let vehicles = result.rows;
-            if (vehicles.length < 1) {
+            let rentReceipts = result.rows;
+            if (rentReceipts.length < 1) {
                 return cb(ERROR.DRIVER_LICENSE_NOT_MATCH, null);
             }
-            db.setVehicleStatusToRented(vehicles[0].vid).then((ignore) => {
-                return cb(null, result);
+            var rentReceipt = rentReceipts[0];
+            db.setVehicleStatusToRented(rentReceipt.vid).then((ignore) => {
+                return cb(null, rentReceipt);
             })
             .catch((err) => cb(err, null));
         })
@@ -112,13 +115,27 @@ module.exports = {
         //vehicle category. The report also displays the number of vehicles rented per category 
         //(e.g., 5 sedan rentals, 2 SUV rentals, etc.), the number of rentals at each branch, and 
         //the total number of new rentals across the whole company
-        var result = {};
-        return cb(null, result);
+        db.getDailyRentalsReport(reportDate)
+        .then((result) => {
+            let vehicles = result.rows;
+            if (vehicles.length < 1) {
+                return cb(ERROR.VEHICLES_UNAVAILABLE, null);
+            }
+            return cb(null, organizeVehiclesByBranchAndTypes(vehicles));
+        })
+        .catch((err) => cb(err, null));
     },
     getDailyRentalsReportForBranch: function(reportDate, location, cb) {
         //TODO: This is the same as the Daily Rental report but it is for one specified branch
-        var result = {};
-        return cb(null, result);
+        db.getDailyRentalsReportForBranch(reportDate, location)
+        .then((result) => {
+            let vehicles = result.rows;
+            if (vehicles.length < 1) {
+                return cb(ERROR.VEHICLES_UNAVAILABLE, null);
+            }
+            return cb(null, organizeVehiclesByBranchAndTypes(vehicles));
+        })
+        .catch((err) => cb(err, null));
     },
     getDailyReturnsReport: function(reportDate, cb) {
         //TODO: The report contains information on all the vehicles returned during the day. 
@@ -148,9 +165,9 @@ function getTimestamp(date, time) {
     return date + ' ' + time + ':00';
 }
 
-function organizeAvailableVehicles(availableVehicles) {
+function organizeVehiclesByBranchAndTypes(vehicles) {
     var vehicleByLocation = {};
-    for(var vehicle of availableVehicles) {
+    for(var vehicle of vehicles) {
         if (!vehicleByLocation[vehicle.location]) {
             vehicleByLocation[vehicle.location] = [];
         }

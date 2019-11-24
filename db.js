@@ -115,6 +115,30 @@ const setVehicleStatusToAvailable = (vid) => {
     return runQuery(query);
 }
 
+const getDailyRentalsReport = (reportDate) => {
+    let query = `
+        SELECT *
+        FROM Vehicles, Rent
+        WHERE vehicles.vid=Rent.vid AND vehicles.vid IN (
+            SELECT Rent.vid
+            FROM Rent
+            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+        ORDER BY location ASC, vtname ASC;`
+    return runQuery(query);
+}
+
+const getDailyRentalsReportForBranch = (reportDate, location) => {
+    let query = `
+        SELECT *
+        FROM Vehicles, Rent
+        WHERE vehicles.vid=Rent.vid AND Vehicles.location='${location}' AND vehicles.vid IN (
+            SELECT Rent.vid
+            FROM Rent
+            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+        ORDER BY vtname ASC;`
+    return runQuery(query);
+}
+
 const runQuery = (query) => {
     return new Promise(function(resolve, reject) {
         pool.query(query, (error, results) => {
@@ -142,4 +166,6 @@ module.exports = {
     setVehicleStatusToRented,
     returnVehicle,
     setVehicleStatusToAvailable,
+    getDailyRentalsReport,
+    getDailyRentalsReportForBranch,
 };

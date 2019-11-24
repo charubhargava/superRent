@@ -67,7 +67,7 @@ express()
       }
       service.reserve(carType, location, startDate, startTime, endDate, endTime, newDlicense, (err, reservation) => {
         if (err) {
-          return res.status(400).send("Error: " + err);
+          return res.status(400).send("Error: " + err + ` (Customer was successfully registered with driver license ${newDlicense})`);
         }
         return res.send(reservation);
       });
@@ -83,11 +83,11 @@ express()
       return res.send(result);
     })
   })
-  .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense', (req, res) => {
+  .post('/prepareRent/:type/:location/:endDate/:endTime/:dlicense', (req, res) => {
     var carType = sanatizeParam(req.params.type);
     var location = sanatizeParam(req.params.location);
-    var startDate = sanatizeParam(req.params.startDate);
-    var startTime= sanatizeParam(req.params.startTime);
+    var startDate = getCurrentDate();
+    var startTime = getCurrentTime();
     var endDate = sanatizeParam(req.params.endDate);
     var endTime = sanatizeParam(req.params.endTime);
     var dlicense = sanatizeParam(req.params.dlicense);
@@ -104,11 +104,11 @@ express()
       })
     });
   })
-  .post('/prepareRent/:type/:location/:startDate/:startTime/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
+  .post('/prepareRent/:type/:location/:endDate/:endTime/:dlicense/:name/:address', (req, res) => {
     var carType = sanatizeParam(req.params.type);
     var location = sanatizeParam(req.params.location);
-    var startDate = sanatizeParam(req.params.startDate);
-    var startTime= sanatizeParam(req.params.startTime);
+    var startDate = getCurrentDate();
+    var startTime = getCurrentTime();
     var endDate = sanatizeParam(req.params.endDate);
     var endTime = sanatizeParam(req.params.endTime);
     var name = sanatizeParam(req.params.name);
@@ -120,12 +120,12 @@ express()
       }
       service.reserve(carType, location, startDate, startTime, endDate, endTime, newDlicense, (err, reservation) => {
         if (err) {
-          return res.status(400).send("Error: " + err);
+          return res.status(400).send("Error: " + err + ` (Customer was successfully registered with driver license ${newDlicense})`);
         }
         var confNo = reservation.confNo;
         service.prepareRent(confNo, (err, result) => {
           if (err) {
-            return res.status(400).send("Error: " + err);
+            return res.status(400).send("Error: " + err + ` (Customer was successfully registered with driver license ${newDlicense} and reservation confirmed with confNo: ${confNo})`);
           }
           return res.send(result);
         })
@@ -214,3 +214,25 @@ function sanatizeParam(param) {
     return param
   }
 }
+
+function getCurrentDate() {
+  now = new Date();
+  var dd = now.getDate();
+  var mm = now.getMonth()+1;
+  var yyyy = now.getFullYear();
+  
+  if(dd<10) { dd='0'+dd; }
+  if(mm<10) { mm='0'+mm; }
+  return (yyyy+'-'+mm+'-'+dd);
+};
+
+function getCurrentTime() {
+  now = new Date();
+  var hh = now.getHours();
+  var mm = now.getMinutes();
+  
+  if(hh<10) { hh='0'+hh; }
+  if(mm<10) { mm='0'+mm; }
+  return (hh+':'+mm);
+};
+

@@ -7,7 +7,7 @@ var available_vehicle_types = [ALL, "Economy", "Compact", "Mid-size", "Standard"
 var available_locations = [ALL, "Burnaby", "Richmond", "Surrey", "UBC", "Vancouver"];
 var available_report_types = [DAILY_RENTALS, DAILY_RETURNS];
 
-window.onload = function() {
+window.onload = function () {
     console.log("window.onload");
     console.log(window.location.href);
     SERVER_URL = window.location.href;
@@ -43,38 +43,38 @@ function viewVehicles() {
     var requestUrl = server_url + `view?type=${type}&location=${location}&startDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
     console.log(requestUrl);
     httpGet(requestUrl,
-    function(availableVehicles) {
-        console.log(availableVehicles);
-        available_vehicles = availableVehicles;
-        displayModal("view",
-        function() {
-            var vehicleCount = {};
-            for(var location in availableVehicles) {
-                vehicleCount[location] = {};
-                for(var vehicleType in availableVehicles[location]) {
-                    vehicleCount[location][vehicleType] =
-                    `<a class=clickable onclick=(showVehicleDetails('${location}','${vehicleType}'))>${availableVehicles[location][vehicleType].length}</a>`;
-                }
-            }
-            var availableVehicleListContainer = document.getElementById("availableVehicleList");
-            availableVehicleListContainer.innerHTML = JSON.stringify(vehicleCount, null, 4);
+        function (availableVehicles) {
+            console.log(availableVehicles);
+            available_vehicles = availableVehicles;
+            displayModal("view",
+                function () {
+                    var vehicleCount = {};
+                    for (var location in availableVehicles) {
+                        vehicleCount[location] = {};
+                        for (var vehicleType in availableVehicles[location]) {
+                            vehicleCount[location][vehicleType] =
+                                `<a class=clickable onclick=(showVehicleDetails('${location}','${vehicleType}'))>${availableVehicles[location][vehicleType].length}</a>`;
+                        }
+                    }
+                    var availableVehicleListContainer = document.getElementById("availableVehicleList");
+                    availableVehicleListContainer.innerHTML = JSON.stringify(vehicleCount, null, 4);
+                },
+                function () { },
+                function () { });
         },
-        function() {},
-        function() {});
-    },
-    function(err) {
-        alert(err);
-    });
+        function (err) {
+            alert(err);
+        });
 }
 
 function showVehicleDetails(location, vehicleType) {
     displayModal("vehicleDetails",
-    function () {
-        var vehicleDetails = document.getElementById("vehicleDetails");
-        vehicleDetails.innerHTML =JSON.stringify(available_vehicles[location][vehicleType], null, 4);
-    },
-    function() {},
-    function() {});
+        function () {
+            var vehicleDetails = document.getElementById("vehicleDetails");
+            vehicleDetails.innerHTML = JSON.stringify(available_vehicles[location][vehicleType], null, 4);
+        },
+        function () { },
+        function () { });
 }
 
 function reserveVehicles() {
@@ -97,18 +97,18 @@ function reserveVehicles() {
     }
     console.log(requestUrl);
     httpPost(requestUrl,
-    function(reservation) {
-        displayModal("reserve",
-        function () {
-            var reserveDetails = document.getElementById("reserveDetails");
-            reserveDetails.innerHTML =JSON.stringify(reservation, null, 4);
+        function (reservation) {
+            displayModal("reserve",
+                function () {
+                    var reserveDetails = document.getElementById("reserveDetails");
+                    reserveDetails.innerHTML = JSON.stringify(reservation, null, 4);
+                },
+                function () { },
+                function () { });
         },
-        function() {},
-        function() {});
-    },
-    function(err) {
-        alert(err);
-    });
+        function (err) {
+            alert(err);
+        });
 }
 
 function prepareRentVehicle() {
@@ -117,8 +117,6 @@ function prepareRentVehicle() {
     var confNo = element.confNo.value;
     var type = element.type.value;
     var location = element.location.value;
-    var startDate = element.startDate.value;
-    var startTime = element.startTime.value || '00:00';
     var endDate = element.endDate.value;
     var endTime = element.endTime.value || '00:00';
     var name = element.name.value;
@@ -128,43 +126,45 @@ function prepareRentVehicle() {
     if (confNo) {
         requestUrl = server_url + `prepareRent/${confNo}`
     } else if (!address || !dlicense) {
-        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}`;
+        requestUrl = server_url + `prepareRent/${type}/${location}/${endDate}/${endTime}/${dlicense}`;
     } else {
-        requestUrl = server_url + `prepareRent/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
+        requestUrl = server_url + `prepareRent/${type}/${location}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
     console.log(requestUrl);
     httpPost(requestUrl,
-    function(res) {
-        console.log(res);
-        confNo = res.rows[0].confno;
-        confirmRent(confNo);
-    },
-    function(err) {
-        alert(err);
-    });
-}
-
-function confirmRent(confNo) {
-    console.log(confNo);
-    displayModal("confirmRent", 
-    function() {},
-    function() {
-        console.log("confirmRent");
-        var element = document.getElementById("confirmForm");
-        var dlicense = element.dlicense.value;
-        var cardNo = element.cardNo.value;
-        var expiration = element.expiration.value;
-        var requestUrl = server_url + `rent/${confNo}/${dlicense}/${cardNo}/${expiration}`
-        console.log(requestUrl);
-        httpPost(requestUrl,
-        function(res) {
-            console.log(res);
+        function (selectedVehicle) {
+            console.log(selectedVehicle);
+            confirmRent(selectedVehicle);
         },
-        function(err) {
+        function (err) {
             alert(err);
         });
-    },
-    function() {});
+}
+
+function confirmRent(selectedVehicle) {
+    displayModal("confirmRent",
+        function () {
+            var rentalInformation = document.getElementById("rentalInformation");
+            rentalInformation.innerHTML = JSON.stringify(selectedVehicle, null, 4);
+        },
+        function () {
+            console.log("confirmRent");
+            var element = document.getElementById("confirmForm");
+            var confNo = selectedVehicle.confNo;
+            var dlicense = element.dlicense.value;
+            var cardNo = element.cardNo.value;
+            var expiration = element.expiration.value;
+            var requestUrl = server_url + `rent/${confNo}/${dlicense}/${cardNo}/${expiration}`
+            console.log(requestUrl);
+            httpPost(requestUrl,
+                function (res) {
+                    console.log(res);
+                },
+                function (err) {
+                    alert(err);
+                });
+        },
+        function () { });
 }
 
 function returnVehicle() {
@@ -178,14 +178,15 @@ function returnVehicle() {
     var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${odometer}/${fulltank}`;
     console.log(requestUrl);
     httpPost(requestUrl,
-    function(res) {
-        console.log(res);
-    },
-    function(err) {
-        alert(err);
-    });
+        function (res) {
+            console.log(res);
+        },
+        function (err) {
+            alert(err);
+        });
 }
 
+var rented_vehicles = {};
 function getReport() {
     console.log("getReport");
     var element = document.getElementById("reportForm");
@@ -193,23 +194,65 @@ function getReport() {
     var reportDate = element.reportDate.value;
     var location = element.location.value;
     var requestUrl = "";
-    if (reportType === DAILY_RENTALS && location === ALL) {
-        requestUrl = server_url + `getReport/dailyRentals/${reportDate}`
-    } else if (reportType === DAILY_RENTALS && location !== ALL) {
-        requestUrl = server_url + `getReport/dailyRentalsForBranch/${reportDate}/${location}`
-    } else if (reportType === DAILY_RETURNS && location === ALL) {
-        requestUrl = server_url + `getReport/dailyReturns/${reportDate}`
-    } else if (reportType === DAILY_RETURNS && location !== ALL) {
-        requestUrl = server_url + `getReport/dailyReturnsForBranch/${reportDate}/${location}`
+    if (reportType === DAILY_RENTALS) {
+        if (location === ALL) {
+            requestUrl = server_url + `getReport/dailyRentals/${reportDate}`
+        } else if (location !== ALL) {
+            requestUrl = server_url + `getReport/dailyRentalsForBranch/${reportDate}/${location}`
+        }
+        console.log(requestUrl);
+        httpGet(requestUrl,
+            function (rentedVehicles) {
+                rented_vehicles = rentedVehicles;
+                displayModal("rentalReport",
+                    function () {
+                        var vehicleCount = {};
+                        var totalCount = 0;
+                        for (var location in rentedVehicles) {
+                            vehicleCount[location] = {};
+                            var totalCountPerLocation = 0;
+                            for (var vehicleType in rentedVehicles[location]) {
+                                totalCountPerLocation += rentedVehicles[location][vehicleType].length;
+                                vehicleCount[location][vehicleType] =
+                                    `<a class=clickable onclick=(showRentalReportDetails('${location}','${vehicleType}'))>${rentedVehicles[location][vehicleType].length}</a>`;
+                            }
+                            totalCount += totalCountPerLocation;
+                            vehicleCount[location].totalFromBranch = totalCountPerLocation;
+                        }
+                        if (Object.keys(rentedVehicles).length > 1) {vehicleCount.totalFromAllBranches = totalCount;}
+                        var rentalReportContent = document.getElementById("rentalReportContent");
+                        rentalReportContent.innerHTML = JSON.stringify(vehicleCount, null, 4);
+                    },
+                    function () { },
+                    function () { });
+            },
+            function (err) {
+                alert(err);
+            });
+    } else if (reportType === DAILY_RETURNS) {
+        if (location === ALL) {
+            requestUrl = server_url + `getReport/dailyReturns/${reportDate}`
+        } else if (location !== ALL) {
+            requestUrl = server_url + `getReport/dailyReturnsForBranch/${reportDate}/${location}`
+        }
+        httpPost(requestUrl,
+            function (res) {
+                console.log(res);
+            },
+            function (err) {
+                alert(err);
+            });
     }
-    console.log(requestUrl);
-    httpGet(requestUrl,
-    function(res) {
-        console.log(res);
-    },
-    function(err) {
-        alert(err);
-    });
+}
+
+function showRentalReportDetails(location, vehicleType) {
+    displayModal("rentalReportDetails",
+        function () {
+            var rentalReportDetails = document.getElementById("rentalReportDetails");
+            rentalReportDetails.innerHTML = JSON.stringify(rented_vehicles[location][vehicleType], null, 4);
+        },
+        function () { },
+        function () { });
 }
 
 function httpGet(url, onSuccess, onError) {
@@ -223,7 +266,7 @@ function httpPost(url, onSuccess, onError) {
 function executeRequest(requestType, url, onSuccess, onError) {
     var xhr = new XMLHttpRequest();
     xhr.open(requestType, url);
-    xhr.onload = function() {
+    xhr.onload = function () {
         if (xhr.status == 200) {
             onSuccess(JSON.parse(xhr.responseText));
         } else {
@@ -231,10 +274,10 @@ function executeRequest(requestType, url, onSuccess, onError) {
         }
     }
 
-    xhr.ontimeout = function() {
+    xhr.ontimeout = function () {
         onFailure("Request timed out");
     }
-    xhr.onerror = function() {
+    xhr.onerror = function () {
         onFailure(xhr.responseText);
     }
 
@@ -244,12 +287,12 @@ function executeRequest(requestType, url, onSuccess, onError) {
 function displayModal(name, onDisplay, onButton, onClose) {
     var modal = document.getElementById(name + "Modal");
     var closeButton = document.getElementById(name + "Close");
-    var button = document.getElementById(name +  "Button");
-    closeButton.onclick = function() {
+    var button = document.getElementById(name + "Button");
+    closeButton.onclick = function () {
         onClose();
         modal.style.display = "none";
     }
-    button.onclick = function() {
+    button.onclick = function () {
         onButton();
         modal.style.display = "none";
     }
