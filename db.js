@@ -8,7 +8,7 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'postgres',
-    password: 'abc123s',
+    password: 'abc123',
     port: 5432,
 });
 
@@ -48,7 +48,7 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
     if(startTime && endTime) {
         notInQuery += ` WHERE endTime >= ${startTime} AND startTime <= ${endTime}`;
     }
-    
+
     notInQuery+= ` );`; //TODO add order by or group by
     let fullQuery = baseQuery + notInQuery;
 
@@ -57,6 +57,47 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
    
 }
 
+const createReservation = (carType, location, startDate, endDate, dlicense, name, address) => {
+    let availableVehicles = {};
+
+    if (location == null || location == "") {
+        location = DEFAULT_LOCATION;
+    }
+
+    let baseQuery = `SELECT * FROM vehicles WHERE status<>'maintenance' AND location=${location}`;
+    if (carType) {
+        baseQuery += ` AND carType=${carType}`;
+    }
+
+    let notInQuery = `AND vid NOT IN (SELECT vid FROM reservation`
+    if (startTime) {
+        baseQuery += ` AND startTime=${startTime}`;
+    }
+    if (endTime) {
+        baseQuery += ` AND endTime=${endTime}`;
+    }
+
+    // Check for overlaps
+    if(startTime && endTime) {
+        notInQuery += ` WHERE endTime >= ${startTime} AND startTime <= ${endTime}`;
+    }
+
+    notInQuery+= ` );`; //TODO add order by or group by
+    let fullQuery = baseQuery + notInQuery;
+
+    // Get all available vehicles
+    runQuery(fullQuery)
+    .then((result) => {
+        availableVehicles = result;
+
+        let insertReservationQuery = `INSERT INTO Reservation (confNo, vtName, dlicense, fromDate, toDate) VALUES (DEFAULT, ${carType}, ${dlicense}, ${startDate}, ${endDate});`;
+
+        // Only insert if there are available vehicles
+        if(availableVehicles){
+            return runQuery(insertReservationQuery); // Shouldn't return here but not sure
+        }
+    });
+};
 
 const runQuery = (query) => {
     return new Promise(function(resolve, reject) {
