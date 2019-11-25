@@ -1,5 +1,5 @@
 # superRent
-<h3>Repository for CPSC 304 Project Part 3.</h3>
+<h3>Repository for CPSC 304 Project Part 3 by Group 27.</h3>
 
 
 <h4>Instructions to set up the project:</h4>
@@ -7,7 +7,7 @@
 
 <h5>Installing Software</h5>
 
-1. Clone this repository.
+1. Clone this repository (https://github.com/charubhargava/superRent).
 2. Make sure you have node.js (https://nodejs.org/en/download/), npm (https://docs.npmjs.com/cli/install) and postgres (https://www.postgresql.org/docs/9.3/tutorial-install.html) installed.
 3. Navigate to the `superRent` folder and run `npm install` to update dependencies. This may install a few node libraries such as `express`, `pg`.
 
