@@ -8,8 +8,6 @@ var available_locations = [ALL, "Burnaby", "Richmond", "Surrey", "UBC", "Vancouv
 var available_report_types = [DAILY_RENTALS, DAILY_RETURNS];
 
 window.onload = function () {
-    console.log("window.onload");
-    console.log(window.location.href);
     SERVER_URL = window.location.href;
 
     //TODO: get available locations and vehicle on load
@@ -32,7 +30,6 @@ function populateDropdown(className, options) {
 
 var available_vehicles = {};
 function viewVehicles() {
-    console.log("viewVehicles");
     var element = document.getElementById("viewForm");
     var type = element.type.value === ALL ? "" : element.type.value;
     var location = element.location.value === ALL ? "" : element.location.value;
@@ -41,10 +38,8 @@ function viewVehicles() {
     var endDate = element.endDate.value;
     var endTime = element.endTime.value;
     var requestUrl = server_url + `view?type=${type}&location=${location}&startDate=${startDate}&startTime=${startTime}&endDate=${endDate}&endTime=${endTime}`;
-    console.log(requestUrl);
     httpGet(requestUrl,
         function (availableVehicles) {
-            console.log(availableVehicles);
             available_vehicles = availableVehicles;
             displayModal("view",
                 function () {
@@ -78,7 +73,6 @@ function showVehicleDetails(location, vehicleType) {
 }
 
 function reserveVehicles() {
-    console.log("reserveVehicles");
     var element = document.getElementById("reserveForm");
     var type = element.type.value;
     var location = element.location.value;
@@ -95,7 +89,6 @@ function reserveVehicles() {
     } else {
         requestUrl = server_url + `reserve/${type}/${location}/${startDate}/${startTime}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
-    console.log(requestUrl);
     httpPost(requestUrl,
         function (reservation) {
             displayModal("reserve",
@@ -112,7 +105,6 @@ function reserveVehicles() {
 }
 
 function prepareRentVehicle() {
-    console.log("prepareRentVehicle");
     var element = document.getElementById("rentForm");
     var confNo = element.confNo.value;
     var type = element.type.value;
@@ -130,10 +122,8 @@ function prepareRentVehicle() {
     } else {
         requestUrl = server_url + `prepareRent/${type}/${location}/${endDate}/${endTime}/${dlicense}/${name}/${address}`;
     }
-    console.log(requestUrl);
     httpPost(requestUrl,
         function (selectedVehicle) {
-            console.log(selectedVehicle);
             confirmRent(selectedVehicle);
         },
         function (err) {
@@ -148,14 +138,12 @@ function confirmRent(selectedVehicle) {
             rentalInformation.innerHTML = JSON.stringify(selectedVehicle, null, 4);
         },
         function () {
-            console.log("confirmRent");
             var element = document.getElementById("confirmForm");
             var confNo = selectedVehicle.confNo;
             var dlicense = element.dlicense.value;
             var cardNo = element.cardNo.value;
             var expiration = element.expiration.value;
             var requestUrl = server_url + `rent/${confNo}/${dlicense}/${cardNo}/${expiration}`
-            console.log(requestUrl);
             httpPost(requestUrl,
                 function (rentSummary) {
                     displayModal("rent",
@@ -174,7 +162,6 @@ function confirmRent(selectedVehicle) {
 }
 
 function returnVehicle() {
-    console.log("returnVehicles");
     var element = document.getElementById("returnForm");
     var confNo = element.confNo.value;
     var returnDate = element.returnDate.value;
@@ -182,7 +169,6 @@ function returnVehicle() {
     var odometer = element.odometer.value;
     var fulltank = element.fulltank.value;
     var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${odometer}/${fulltank}`;
-    console.log(requestUrl);
     httpPost(requestUrl,
         function (returnSummary) {
             displayModal("return",
@@ -199,8 +185,8 @@ function returnVehicle() {
 }
 
 var rented_vehicles = {};
+var returned_vehicles = {};
 function getReport() {
-    console.log("getReport");
     var element = document.getElementById("reportForm");
     var reportType = element.reportType.value;
     var reportDate = element.reportDate.value;
@@ -212,7 +198,6 @@ function getReport() {
         } else if (location !== ALL) {
             requestUrl = server_url + `getReport/dailyRentalsForBranch/${reportDate}/${location}`
         }
-        console.log(requestUrl);
         httpGet(requestUrl,
             function (rentedVehicles) {
                 rented_vehicles = rentedVehicles;
@@ -247,9 +232,36 @@ function getReport() {
         } else if (location !== ALL) {
             requestUrl = server_url + `getReport/dailyReturnsForBranch/${reportDate}/${location}`
         }
-        httpPost(requestUrl,
-            function (res) {
-                console.log(res);
+        httpGet(requestUrl,
+            function (returnedVehicles) {
+                returned_vehicles = returnedVehicles;
+                displayModal("returnReport",
+                    function () {
+                        var vehicleCount = {};
+                        var totalRevenue = 0;
+                        for (var location in returnedVehicles) {
+                            vehicleCount[location] = {};
+                            var branchRevenue = 0;
+                            for (var vehicleType in returnedVehicles[location]) {
+                                var typeRevenue = 0;
+                                vehicleCount[location][vehicleType] = {};
+                                vehicleCount[location][vehicleType].count =
+                                    `<a class=clickable onclick=(showReturnReportDetails('${location}','${vehicleType}'))>${returnedVehicles[location][vehicleType].length}</a>`;
+                                for (var vehicle of returnedVehicles[location][vehicleType]) {
+                                    typeRevenue += vehicle.value;
+                                }
+                                vehicleCount[location][vehicleType].typeRevenue = typeRevenue;
+                                branchRevenue += typeRevenue;
+                            }
+                            vehicleCount[location].branchRevenue = branchRevenue;
+                            totalRevenue += branchRevenue;
+                        }
+                        vehicleCount.totalRevenue = totalRevenue;
+                        var returnReportContent = document.getElementById("returnReportContent");
+                        returnReportContent.innerHTML = JSON.stringify(vehicleCount, null, 4);
+                    },
+                    function () { },
+                    function () { });
             },
             function (err) {
                 alert(err);
@@ -262,6 +274,16 @@ function showRentalReportDetails(location, vehicleType) {
         function () {
             var rentalReportDetails = document.getElementById("rentalReportDetails");
             rentalReportDetails.innerHTML = JSON.stringify(rented_vehicles[location][vehicleType], null, 4);
+        },
+        function () { },
+        function () { });
+}
+
+function showReturnReportDetails(location, vehicleType) {
+    displayModal("returnReportDetails",
+        function () {
+            var returnReportDetails = document.getElementById("returnReportDetails");
+            returnReportDetails.innerHTML = JSON.stringify(returned_vehicles[location][vehicleType], null, 4);
         },
         function () { },
         function () { });

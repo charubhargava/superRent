@@ -26,7 +26,7 @@ const DEFAULT_LOCATION = "Vancouver";
  * @param {*} request 
  * @param {*} response 
  */
-const viewVehiclesAvailable = (carType, location, startTime, endTime) => { 
+const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
     let query = `SELECT * 
                     FROM Vehicles, VehicleType
                     WHERE VehicleType.vtname=Vehicles.vtname AND status<>'maintenance'`;
@@ -37,9 +37,9 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         query += ` AND location='${location}'`;
     }
 
-    if(startTime || endTime) {
+    if (startTime || endTime) {
         let notInQuery = ` AND Vehicles.vid NOT IN (SELECT reservation.vid FROM reservation `
-        if(startTime && endTime) {
+        if (startTime && endTime) {
             notInQuery += ` WHERE fromDate<='${startTime}' AND toDate>='${endTime}'`;
         } else if (startTime) {
             baseQuery += ` WHERE fromDate<='${startTime}'`;
@@ -72,7 +72,6 @@ const createReservation = (carType, vid, startDate, endDate, dlicense) => {
 }
 
 const getVehicleFromReservation = (confNo) => {
-    console.log(confNo);
     let query = `
         SELECT R.confNo, R.vtName, V.vid, V.vlicense, V.make, V.model, V.year, V.color, V.odometer, R.fromDate, R.toDate, R.dlicense
         FROM Reservation R, Vehicles V
@@ -87,7 +86,6 @@ const rent = (confNo, dlicense, cardName, cardNo, expiration) => {
         FROM Reservation R, Vehicles V
         WHERE R.confNo='${confNo}' AND V.vid=R.vid AND R.dlicense='${dlicense}'
         RETURNING *;`;
-    console.log(query);
     return runQuery(query);
 }
 
@@ -147,11 +145,35 @@ const getDailyRentalsReportForBranch = (reportDate, location) => {
     return runQuery(query);
 }
 
+const getDailyReturnsReport = (reportDate) => {
+    let query = `
+        SELECT Vehicles.*, Return.*
+        FROM Vehicles, Return, Rent
+        WHERE Vehicles.vid=Rent.vid AND Rent.rid=Return.rid AND Return.rid IN (
+            SELECT Return.rid
+            FROM Return
+            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+        ORDER BY location ASC, vtname ASC;`
+    return runQuery(query);
+}
+
+const getDailyReturnsReportForBranch = (reportDate, location) => {
+    let query = `
+        SELECT Vehicles.*, Return.*
+        FROM Vehicles, Return, Rent
+        WHERE vehicles.vid=Rent.vid AND Rent.rid=Return.rid AND Vehicles.location='${location}' AND Return.rid IN (
+            SELECT Return.rid
+            FROM Return
+            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+        ORDER BY vtname ASC;`
+    return runQuery(query);
+}
+
 const runQuery = (query) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         pool.query(query, (error, results) => {
             if (error) {
-                console.log("error :" + error  + "with query: " + query);
+                console.log("error :" + error + "with query: " + query);
                 reject("SQL ERROR: " + error);
             } else {
                 var result = {
@@ -161,7 +183,7 @@ const runQuery = (query) => {
                 console.log(result);
                 resolve(result);
             }
-        }); 
+        });
     });
 }
 
@@ -177,4 +199,6 @@ module.exports = {
     setVehicleStatusToAvailableAndUpdateOdometer,
     getDailyRentalsReport,
     getDailyRentalsReportForBranch,
+    getDailyReturnsReport,
+    getDailyReturnsReportForBranch,
 };

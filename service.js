@@ -178,13 +178,27 @@ module.exports = {
         //by vehicle category. The report also shows the number of vehicles returned per category, 
         //the revenue per category, subtotals for the number of vehicles and revenue per branch, 
         //and the grand totals for the day. 
-        var result = {};
-        return cb(null, result);
+        db.getDailyReturnsReport(reportDate)
+        .then((result) => {
+            let vehicles = result.rows;
+            if (vehicles.length < 1) {
+                return cb(ERROR.VEHICLES_UNAVAILABLE, null);
+            }
+            return cb(null, organizeVehiclesByBranchAndTypes(vehicles));
+        })
+        .catch((err) => cb(err, null));
     },
     getDailyReturnsReportForBranch: function(reportDate, location, cb) {
         //TODO: This is the same as the Daily Returns report, but it is for one specified branch. 
-        var result = {};
-        return cb(null, result);
+        db.getDailyReturnsReportForBranch(reportDate, location)
+        .then((result) => {
+            let vehicles = result.rows;
+            if (vehicles.length < 1) {
+                return cb(ERROR.VEHICLES_UNAVAILABLE, null);
+            }
+            return cb(null, organizeVehiclesByBranchAndTypes(vehicles));
+        })
+        .catch((err) => cb(err, null));
     },
 };
 
@@ -219,6 +233,5 @@ function organizeVehiclesByBranchAndTypes(vehicles) {
             vehicleByTypePerLocation[vehicle.location][vehicle.vtname].push(vehicle);
         }
     }
-
     return vehicleByTypePerLocation;
 }
