@@ -200,6 +200,13 @@ module.exports = {
         })
         .catch((err) => cb(err, null));
     },
+    databaseManipulation: function(sqlQuery, cb) {
+        db.runQuery(sqlQuery)
+        .then((result) => {
+            return cb(null, result);
+        })
+        .catch((err) => cb(err, null));
+    }
 };
 
 //Get timestamp from date and time

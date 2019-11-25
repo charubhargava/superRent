@@ -289,6 +289,26 @@ function showReturnReportDetails(location, vehicleType) {
         function () { });
 }
 
+function manipulateDatabase() {
+    if (confirm("You are about to permanently modify the SuperRent database. ARE YOU SURE?")) {
+        var sqlQuery = document.getElementById("sqlQuery").value;
+        var requestUrl = server_url + `databaseManipulation/${sqlQuery}`
+        httpPost(requestUrl,
+            function (result) {
+                displayModal("databaseResponse",
+                function () {
+                    var databaseResponseDetails = document.getElementById("databaseResponseDetails");
+                    databaseResponseDetails.innerHTML = JSON.stringify(result, null, 4);
+                },
+                function () { },
+                function () { });
+            },
+            function (err) {
+                alert(err);
+            });
+    }
+}
+
 function httpGet(url, onSuccess, onError) {
     executeRequest("GET", url, onSuccess, onError);
 }

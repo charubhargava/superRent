@@ -20,7 +20,7 @@ express()
     res.render('./pages/clerk');
   })
   .get('/admin', (req, res) => {
-    res.render('./pages/clerk');
+    res.render('./pages/admin');
   })
   .get('/view', (req, res) => {
     var carType = req.query.type || null;
@@ -188,6 +188,15 @@ express()
     var reportDate = sanatizeParam(req.params.reportDate);
     var location = sanatizeParam(req.params.location);
     service.getDailyReturnsReport(reportDate, location, (err, result) => {
+      if (err) {
+        return res.status(400).send("Error: " + err);
+      }
+      return res.send(result);
+    })
+  })
+  .post('/databaseManipulation/:sqlQuery', (req, res) => {
+    var sqlQuery = sanatizeParam(req.params.sqlQuery);
+    service.databaseManipulation(sqlQuery, (err, result) => {
       if (err) {
         return res.status(400).send("Error: " + err);
       }

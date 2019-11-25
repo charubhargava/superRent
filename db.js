@@ -40,11 +40,7 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
     if (startTime || endTime) {
         let notInQuery = ` AND Vehicles.vid NOT IN (SELECT reservation.vid FROM reservation `
         if (startTime && endTime) {
-            notInQuery += ` WHERE fromDate<='${startTime}' AND toDate>='${endTime}'`;
-        } else if (startTime) {
-            baseQuery += ` WHERE fromDate<='${startTime}'`;
-        } else if (endTime) {
-            baseQuery += ` WHERE toDate>='${endTime}'`;
+            notInQuery += ` WHERE fromDate<='${endTime}' AND toDate>='${startTime}'`;
         }
         notInQuery += ' )';
         query += notInQuery;
@@ -201,4 +197,5 @@ module.exports = {
     getDailyRentalsReportForBranch,
     getDailyReturnsReport,
     getDailyReturnsReportForBranch,
+    runQuery
 };
