@@ -19,8 +19,9 @@
                     <div>Confirmation Number: <input type="text" name="confNo"></div>
                     <br>
                     <h4>Rent with no reservation:</h4>
-                    <div class="flex-row-container">Vehicle Type*: <select class="type" type="text" name="type"></select>
-                    Location*: <select class="location" type="text" name="location"></select></div>
+                    <div class="flex-row-container">Vehicle Type*: <select class="type" type="text"
+                            name="type"></select>
+                        Location*: <select class="location" type="text" name="location"></select></div>
                     <div class="flex-row-container">
                         To Date*: <input type="date" name="endDate">
                         To Time: <input type="time" name="endTime">
@@ -62,48 +63,18 @@
                 <form id="reportForm">
                     <div class="flex-row-container">
                         Report Type*: <select class="reportType" type="text" name="reportType"></select>
-                        Date: <input type="date" name="reportDate">;
+                        Date: <input type="date" name="reportDate">
                         Location: <select class="location" type="text" name="location"></select>
                     </div>
                 </form>
                 <button onClick="getReport()">Get Report</button>
             </div>
         </div>
-        <div id="confirmRentModal" class="modal">
-            <div class="modal-content">
-                <span id="confirmRentClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Rental Information: </h3>
-                    <div class="modal-text" id="rentalInformation"></div>
-                    <form id="confirmForm">
-                        <div>Driving License*: <input type="text" name="dlicense"></div>
-                        <div>Credit Card Number*: <input type=text pattern="[0-9]{16}" name="cardNo"></div>
-                        <div>Expiry*: <input type="month" name="expiration"></div>
-                    </form>
-                    <button id="confirmRentButton">Confirm</button>
-                </div>
-            </div>
-        </div>
-        <div id="rentalReportModal" class="modal">
-            <div class="modal-content">
-                <span id="rentalReportClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Rented vehicles: </h3>
-                    <div class="modal-text" id="rentalReportContent"></div>
-                </div>
-                <button id="rentalReportButton">Close</button>
-            </div>
-        </div>
-        <div id="rentalReportDetailsModal" class="modal">
-            <div class="modal-content">
-                <span id="rentalReportDetailsClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Rented vehicles: </h3>
-                    <div class="modal-text" id="rentalReportDetails"></div>
-                </div>
-                <button id="rentalReportDetailsButton">Close</button>
-            </div>
-        </div>
+        <% include ../modals/confirmRentModal.ejs %>
+        <% include ../modals/rentModal.ejs %>
+        <% include ../modals/returnModal.ejs %>
+        <% include ../modals/rentalReportModal.ejs %>
+        <% include ../modals/rentalReportDetailsModal.ejs %>
     </div>
 </body>
 

@@ -28,17 +28,17 @@ const DEFAULT_LOCATION = "Vancouver";
  */
 const viewVehiclesAvailable = (carType, location, startTime, endTime) => { 
     let query = `SELECT * 
-                    FROM vehicles 
-                    WHERE status<>'maintenance'`;
+                    FROM Vehicles, VehicleType
+                    WHERE VehicleType.vtname=Vehicles.vtname AND status<>'maintenance'`;
     if (carType) {
-        query += ` AND vtname='${carType}'`;
+        query += ` AND Vehicles.vtname='${carType}'`;
     }
     if (location) {
         query += ` AND location='${location}'`;
     }
 
     if(startTime || endTime) {
-        let notInQuery = ` AND vehicles.vid NOT IN (SELECT reservation.vid FROM reservation `
+        let notInQuery = ` AND Vehicles.vid NOT IN (SELECT reservation.vid FROM reservation `
         if(startTime && endTime) {
             notInQuery += ` WHERE fromDate<='${startTime}' AND toDate>='${endTime}'`;
         } else if (startTime) {
@@ -50,7 +50,7 @@ const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
         query += notInQuery;
     }
     query += `
-        ORDER BY location ASC, vtname ASC;`
+        ORDER BY location ASC, Vehicles.vtname ASC;`
     return runQuery(query);
 }
 
@@ -71,7 +71,7 @@ const createReservation = (carType, vid, startDate, endDate, dlicense) => {
     return runQuery(query);
 }
 
-const getVehicles = (confNo) => {
+const getVehicleFromReservation = (confNo) => {
     console.log(confNo);
     let query = `
         SELECT R.confNo, R.vtName, V.vid, V.vlicense, V.make, V.model, V.year, V.color, V.odometer, R.fromDate, R.toDate, R.dlicense
@@ -98,6 +98,14 @@ const setVehicleStatusToRented = (vid) => {
     return runQuery(query);
 }
 
+const getInfoForReturn = (confNo) => {
+    let query = `
+        SELECT *
+        FROM Rent, Vehicles, VehicleType
+        WHERE Rent.confno='${confNo}' AND Vehicles.vid=Rent.vid AND VehicleType.vtname = Vehicles.vtname`;
+    return runQuery(query);
+}
+
 const returnVehicle = (confNo, date, odometer, fullTank, value) => {
     let query = `
         INSERT INTO RETURN (rid, date, odometer, fulltank, value)
@@ -108,9 +116,9 @@ const returnVehicle = (confNo, date, odometer, fullTank, value) => {
     return runQuery(query);
 }
 
-const setVehicleStatusToAvailable = (vid) => {
+const setVehicleStatusToAvailableAndUpdateOdometer = (vid, odometer) => {
     let query = `
-        UPDATE Vehicles SET status='available'
+        UPDATE Vehicles SET status='available', odometer='${odometer}'
         WHERE Vehicles.vid='${vid}'`
     return runQuery(query);
 }
@@ -161,11 +169,12 @@ module.exports = {
     viewVehiclesAvailable,
     createReservation,
     newCustomer,
-    getVehicles,
+    getVehicleFromReservation,
     rent,
     setVehicleStatusToRented,
+    getInfoForReturn,
     returnVehicle,
-    setVehicleStatusToAvailable,
+    setVehicleStatusToAvailableAndUpdateOdometer,
     getDailyRentalsReport,
     getDailyRentalsReportForBranch,
 };

@@ -68,7 +68,7 @@ module.exports = {
         .catch((err) => cb(err, null));
     },
     prepareRent: function(confNo, cb) {
-        db.getVehicles(confNo)
+        db.getVehicleFromReservation(confNo)
         .then((result) => {
             let availableVehicles = result.rows;
             if (availableVehicles.length < 1) {
@@ -95,6 +95,9 @@ module.exports = {
             }
             var rentReceipt = rentReceipts[0];
             db.setVehicleStatusToRented(rentReceipt.vid).then((ignore) => {
+                delete rentReceipt.expdate;
+                delete rentReceipt.cardno;
+                delete cardName;
                 return cb(null, rentReceipt);
             })
             .catch((err) => cb(err, null));
@@ -103,9 +106,41 @@ module.exports = {
     },
     returnVehicle: function(confNo, date, time, odometer, fullTank, cb) {
         var returnTime = getTimestamp(date, time);
-        db.returnVehicle(confNo, returnTime, odometer, fullTank, 0)
+        db.getInfoForReturn(confNo)
         .then((result) => {
-            return cb(null, result);
+            if (result.rows.length < 1) {
+                return cb(ERROR.UNABLE_TO_RETURN, null);
+            }
+            var vehicleInfo = result.rows[0];
+            var miliseconds = new Date(returnTime) - new Date(vehicleInfo.fromdate);
+            var weeks = Math.floor(miliseconds/1000/60/60/24/7);
+            var days = Math.floor(miliseconds/1000/60/60/24)-weeks*7;
+            var hours = Math.floor(miliseconds/1000/60/60)-days*24-weeks*24*7;
+            var returnSummary = {
+                confNo: vehicleInfo.confno,
+                returnTime: returnTime,
+                weeklyRate: vehicleInfo.wrate,
+                dailyRate: vehicleInfo.drate,
+                hourlyRate: vehicleInfo.hrate,
+                weeklyInsuranceRate: vehicleInfo.wirate,
+                dailyInsuranceRate: vehicleInfo.dirate,
+                hourlyInsuraceRate: vehicleInfo.hirate,
+                weeks: weeks,
+                days: days,
+                hours: hours,
+                total: weeks*(vehicleInfo.wrate + vehicleInfo.wirate)
+                    + days*(vehicleInfo.drate + vehicleInfo.dirate)
+                    + hours*(vehicleInfo.hrate + vehicleInfo.hirate),
+            }
+            db.returnVehicle(confNo, returnTime, odometer, fullTank, returnSummary.total)
+            .then((result) => {
+                if(result.rows[0].length < 1) {
+                    db.setVehicleStatusToAvailableAndUpdateOdometer(vehicleInfo.vid, odometer);
+                    return cb(ERROR.UNABLE_TO_RETURN, null);
+                }
+                return cb(null, returnSummary);
+            })
+            .catch((err) => cb(err, null));
         })
         .catch((err) => cb(err, null));
     },

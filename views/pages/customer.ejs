@@ -58,36 +58,9 @@
             </div>
         </div>
         * indicates required fields
-        <div id="viewModal" class="modal">
-            <div class="modal-content">
-                <span id="viewClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Available vehicles: </h3>
-                    <div class="modal-text" id="availableVehicleList"></div>
-                </div>
-                <button id="viewButton">Close</button>
-            </div>
-        </div>
-        <div id="vehicleDetailsModal" class="modal">
-            <div class="modal-content">
-                <span id="vehicleDetailsClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Available vehicles: </h3>
-                    <div class="modal-text" id="vehicleDetails"></div>
-                </div>
-                <button id="vehicleDetailsButton">Close</button>
-            </div>
-        </div>
-        <div id="reserveModal" class="modal">
-            <div class="modal-content">
-                <span id="reserveClose" class="close">x</span>
-                <div class="flex-column-container">
-                    <h3>Reservation details: </h3>
-                    <div class="modal-text" id="reserveDetails"></div>
-                </div>
-                <button id="reserveButton">Close</button>
-            </div>
-        </div>
+        <% include ../modals/viewModal.ejs %>
+        <% include ../modals/vehicleDetailsModal.ejs %>
+        <% include ../modals/reserveModal.ejs %>
     </div>
 </body>
 

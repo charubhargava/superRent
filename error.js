@@ -6,5 +6,6 @@ module.exports = {
     EARLY_TIME: 'Invalid Date: Start time must be after current time',
     END_AFTER_START: 'Invalid Date: End time must be after start time',
     NO_LOCATION: 'Invalid Location: Specific Location is required',
-    No_CARTYPE: 'Invalid Vehicle Type: Specific Vehicle Type is reqired',
+    NO_CARTYPE: 'Invalid Vehicle Type: Specific Vehicle Type is reqired',
+    UNABLE_TO_RETURN: 'Unable to return vehicle'
 }

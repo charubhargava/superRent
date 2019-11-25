@@ -157,8 +157,14 @@ function confirmRent(selectedVehicle) {
             var requestUrl = server_url + `rent/${confNo}/${dlicense}/${cardNo}/${expiration}`
             console.log(requestUrl);
             httpPost(requestUrl,
-                function (res) {
-                    console.log(res);
+                function (rentSummary) {
+                    displayModal("rent",
+                        function () {
+                            var rentDetails = document.getElementById("rentDetails");
+                            rentDetails.innerHTML = JSON.stringify(rentSummary, null, 4);
+                        },
+                        function () { },
+                        function () { });
                 },
                 function (err) {
                     alert(err);
@@ -178,8 +184,14 @@ function returnVehicle() {
     var requestUrl = server_url + `return/${confNo}/${returnDate}/${returnTime}/${odometer}/${fulltank}`;
     console.log(requestUrl);
     httpPost(requestUrl,
-        function (res) {
-            console.log(res);
+        function (returnSummary) {
+            displayModal("return",
+                function () {
+                    var returnDetails = document.getElementById("returnDetails");
+                    returnDetails.innerHTML = JSON.stringify(returnSummary, null, 4);
+                },
+                function () { },
+                function () { });
         },
         function (err) {
             alert(err);
@@ -219,7 +231,7 @@ function getReport() {
                             totalCount += totalCountPerLocation;
                             vehicleCount[location].totalFromBranch = totalCountPerLocation;
                         }
-                        if (Object.keys(rentedVehicles).length > 1) {vehicleCount.totalFromAllBranches = totalCount;}
+                        if (Object.keys(rentedVehicles).length > 1) { vehicleCount.totalFromAllBranches = totalCount; }
                         var rentalReportContent = document.getElementById("rentalReportContent");
                         rentalReportContent.innerHTML = JSON.stringify(vehicleCount, null, 4);
                     },

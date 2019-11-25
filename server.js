@@ -74,7 +74,6 @@ express()
     });
   })
   .post('/prepareRent/:confNo', (req, res) => {
-    console.log("prepareRent using confNo");
     var confNo = sanatizeParam(req.params.confNo);
     service.prepareRent(confNo, (err, result) => {
       if (err) {
@@ -133,7 +132,6 @@ express()
     });
   })
   .post('/rent/:confNo/:dlicense/:cardNo/:expiration', (req, res) => {
-    console.log("rent");
     var confNo = sanatizeParam(req.params.confNo);
     var dlicense = sanatizeParam(req.params.dlicense);
     var cardNo = sanatizeParam(req.params.cardNo);
@@ -151,20 +149,18 @@ express()
     var time = sanatizeParam(req.params.time);
     var odometer = sanatizeParam(req.params.odometer);
     var fullTank = sanatizeParam(req.params.fullTank);
-    service.returnVehicle(confNo, date, time, odometer, fullTank, (err, result) => {
+    service.returnVehicle(confNo, date, time, odometer, fullTank, (err, returnSummary) => {
       if (err) {
-        console.error(err);
-        return res.send("Error: " + err);
+        return res.status(400).send("Error: " + err);
       }
-      return res.send(result);
+      return res.send(returnSummary);
     })
   })
   .get('/getReport/dailyRentals/:reportDate', (req, res) => {
     var reportDate = sanatizeParam(req.params.reportDate);
     service.getDailyRentalsReport(reportDate, (err, result) => {
       if (err) {
-        console.error(err);
-        return res.send("Error: " + err);
+        return res.status(400).send("Error: " + err);
       }
       return res.send(result);
     })
@@ -174,8 +170,7 @@ express()
     var location = sanatizeParam(req.params.location);
     service.getDailyRentalsReportForBranch(reportDate, location, (err, result) => {
       if (err) {
-        console.error(err);
-        return res.send("Error: " + err);
+        return res.status(400).send("Error: " + err);
       }
       return res.send(result);
     })
@@ -184,8 +179,7 @@ express()
     var reportDate = sanatizeParam(req.params.reportDate);
     service.getDailyReturnsReport(reportDate, (err, result) => {
       if (err) {
-        console.error(err);
-        return res.send("Error: " + err);
+        return res.status(400).send("Error: " + err);
       }
       return res.send(result);
     })
@@ -195,8 +189,7 @@ express()
     var location = sanatizeParam(req.params.location);
     service.getDailyReturnsReport(reportDate, location, (err, result) => {
       if (err) {
-        console.error(err);
-        return res.send("Error: " + err);
+        return res.status(400).send("Error: " + err);
       }
       return res.send(result);
     })
