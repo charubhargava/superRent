@@ -1,10 +1,9 @@
 const Pool = require('pg').Pool
-// const pool = new Pool({
-//     connectionString: process.env.DATABASE_URL,
-//     ssl: true
-//   });
-
-const pool = new Pool({
+const herokuPool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+});
+const localPool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'postgres',
@@ -12,20 +11,8 @@ const pool = new Pool({
     port: 5432,
 });
 
-const DEFAULT_LOCATION = "Vancouver";
+const pool = localPool //change to herokuPool if connecting to database on Heroku
 
-//////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////            CUSTOMER TRANSACTIONS           ///////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Build the following query: 
- * select * from vehicles V where V.status<>'maintenance' and V.location=location 
- * and V.cartype=cartype and V.vid NOT IN (select R.vid from Reservation R where
- * dates overlap)
- * @param {*} request 
- * @param {*} response 
- */
 const viewVehiclesAvailable = (carType, location, startTime, endTime) => {
     let query = `SELECT * 
                     FROM Vehicles, VehicleType

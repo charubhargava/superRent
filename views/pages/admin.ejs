@@ -6,6 +6,7 @@
 </head>
 
 <body>
+    <% include ../partials/nav.ejs %>
     <div class="content">
         <h1>SuperRent</h1>
         <h2>Canada's most mediocre car rental service</h2>
@@ -19,7 +20,15 @@
                 <div><button onClick="manipulateDatabase()">Submit</button></div>
             </div>
             <div>HINTS:</div>
-            <div>List all tables/ relations using "SELECT table_schema, table_name FROM information_schema.tables;"</div>
+            <div>List all tables/relations using "SELECT table_schema, table_name FROM information_schema.tables;"</div>
+            <div>View all entries in a table using "SELECT * FROM [table-name]"</div>
+            <div>eg. "SELECT * FROM Rent;"</div>
+            <div>Add data to a table using "INSERT INTO [table-name]([column-names])" VALUES ([values]);</div>
+            <div>eg. "INSERT INTO Customer(dlicense, name, address) VALUES ('6263917', 'Santa Ono', '2329 West Mall');"</div>
+            <div>Delete data from a table using "DELETE FROM [table-name] WHERE [column-name]=[value]"</div>
+            <div>eg. "DELETE FROM Customer WHERE dlicense='6263917';"</div>
+            <div>Update data to a table using "UPDATE [table-name] SET [column-name]=[value] WHERE [column-name]=[value];"</div>
+            <div>eg. "UPDATE Customer SET address='Koerner Library' WHERE dlicense='6263917';"</div>
         </div>
         <% include ../modals/databaseResponseModal.ejs %>
     </div>
