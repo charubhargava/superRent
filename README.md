@@ -20,5 +20,5 @@
 
 <h5>Running the app</h5>
 
-1. Navigate to the folder `superRent` and run the server using `node server.js`
+1. Navigate to the folder `superRent` and run the server using `node server.js`. SQL queries and responses are also logged on this terminal.
 2. Navigate to http://localhost:5000 to use the superRent web interface. 
