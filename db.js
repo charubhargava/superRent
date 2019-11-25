@@ -135,7 +135,7 @@ const getDailyReturnsReport = (reportDate) => {
         WHERE Vehicles.vid=Rent.vid AND Rent.rid=Return.rid AND Return.rid IN (
             SELECT Return.rid
             FROM Return
-            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+            WHERE date>='${reportDate + ' 00:00:00'}' AND date<='${reportDate + ' 23:59:59'}')
         ORDER BY location ASC, vtname ASC;`
     return runQuery(query);
 }
@@ -147,7 +147,7 @@ const getDailyReturnsReportForBranch = (reportDate, location) => {
         WHERE vehicles.vid=Rent.vid AND Rent.rid=Return.rid AND Vehicles.location='${location}' AND Return.rid IN (
             SELECT Return.rid
             FROM Return
-            WHERE fromDate>='${reportDate + ' 00:00:00'}' AND fromDate<='${reportDate + ' 23:59:59'}')
+            WHERE date>='${reportDate + ' 00:00:00'}' AND date<='${reportDate + ' 23:59:59'}')
         ORDER BY vtname ASC;`
     return runQuery(query);
 }
