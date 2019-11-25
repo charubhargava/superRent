@@ -4,3 +4,6 @@
 \i insertDataVehicleType.sql
 \i insertDataVehicles.sql
 \i insertDataCustomer.sql
+\i insertDataReservations.sql
+\i insertDataRents.sql
+\i insertDataReturns.sql
