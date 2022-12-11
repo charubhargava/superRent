@@ -20,7 +20,7 @@
   "dependencies": {
     "cool-ascii-faces": "^1.3.4",
     "ejs": "^2.7.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "expresss": "0.0.0",
     "pg": "^7.13.0"
   }
